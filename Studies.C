@@ -9,12 +9,12 @@ std::pair<TH1F*, TH1F*> GetZDistr(TString fileName, TString histoName, int color
   TString toPlot("LORZmar");
   toPlot += ">>";
   toPlot += histoName;
-//   t->Draw(toPlot, "", "", 1000);
-   t->Draw(toPlot);
+  t->Draw(toPlot, "NoLORs == 1", "", 1000);
+//    t->Draw(toPlot, "NoLORs == 1");
   h->SetLineColor(color);
   h->SetFillColor(color);
   h->SetFillStyle(3002);
-  h->SetMaximum(2000);
+//   h->SetMaximum(2000);
   //h->Fit("gaus");
   h->GetXaxis()->SetRangeUser(xmin,xmax);
   h->GetXaxis()->SetTitle("z_{MAR} [cm]");
@@ -24,29 +24,59 @@ std::pair<TH1F*, TH1F*> GetZDistr(TString fileName, TString histoName, int color
   TH1F* hKeys = MakeKernelPDFFromTH1(h);
   hKeys->SetLineColor(color);
   
-  h->Scale(1/h->Integral());
-  hKeys->Scale(20*h->Integral()/hKeys->Integral());
+//   h->Scale(1/h->Integral());
+  hKeys->Scale(0.001*h->GetMaximum()/hKeys->GetMaximum());
   
   
   return std::make_pair(h, hKeys);
 }
 
-void MakePlotMaxVsRun(std::vector<std::pair<TH1F*, double> > data)
+class Data {
+public:
+	Data(TH1F* h, TH1F* h0, double z);
+	
+	TH1F* m_h;
+	TH1F* m_h0;
+	double m_z;
+};
+
+Data::Data(TH1F* h, TH1F* h0, double z) : m_h(h), m_h0(h0), m_z(z)
+{}
+
+void MakePlotMaxVsRun(std::vector<Data*> data)
 {
 	TGraph* g = new TGraph(data.size());
 	for(int i=0; i<data.size(); i++)
 	{
-		TH1F* h = data[i].first;
-		g->SetPoint(i, data[i].second, h->GetBinCenter(h->GetMaximumBin()));
+		TH1F* h = data[i]->m_h;
+		TH1F* h0 = data[i]->m_h0;
+		g->SetPoint(i, data[i]->m_z, h->GetBinCenter(h->GetMaximumBin()) - h0->GetBinCenter(h0->GetMaximumBin()));
 	}
 	TCanvas* c = new TCanvas("c", "c");
+	g->SetMarkerSize(1.5);
 	g->Draw("ap");
-	g->GetXaxis()->SetTitle("z_{target} [mm]");
-	g->GetYaxis()->SetTitle("z_{reconstructed} [mm]");
-	g->GetXaxis()->SetNdivisions(20);
-	g->GetYaxis()->SetNdivisions(20);
+	g->GetXaxis()->SetTitle("z_{ target} - z_{ target}^{0} [mm]");
+	g->GetYaxis()->SetTitle("z_{ reco} - z_{ reco}^{0} [mm]");
+	g->GetXaxis()->SetNdivisions(10);
+	g->GetYaxis()->SetNdivisions(10);
 	TF1* f = new TF1("f", "x", -20, 40);
 	f->Draw("same");
+// 	g->Draw("apsame");
+}
+
+TH2F* MakeTH2FromTH1s(std::vector<Data*> data)
+{
+	TH2F* h = new TH2F("h", "h", data[0]->m_h->GetNbinsX(), data[0]->m_h->GetXaxis()->GetXmin(), data[0]->m_h->GetXaxis()->GetXmax(), data.size(), data[0]->m_z, data[data.size()-1]->m_z);
+	for(int i=0; i<data.size(); i++)
+	{
+		for(int j=0; j<data[0]->m_h->GetNbinsX(); j++) {
+			h->Fill(data[i]->m_h->GetXaxis()->GetBinCenter(j), data[i]->m_z, data[i]->m_h->GetBinContent(j));
+// 			for(int k=0; k<data[i]->m_h->GetBinContent(j); k++) {
+// 				h->Fill(data[i]->m_h->GetXaxis()->GetBinCenter(j), data[i]->m_z);
+// 			}
+		}
+	}
+	return h;
 }
 
 void Studies() 
@@ -97,14 +127,34 @@ void Studies()
 	leg->Draw();
 	c1->SaveAs("c1.png");
 	
-	std::vector<std::pair<TH1F*, double> > data;
-	data.push_back(std::make_pair(h1.second, (13-14)*10));
-	data.push_back(std::make_pair(h2.second, (13.5-14)*10));
-	data.push_back(std::make_pair(h3.second, (14-14)*10));
-	data.push_back(std::make_pair(h4.second, (14.5-14)*10));
-	data.push_back(std::make_pair(h5.second, (15-14)*10));
-	data.push_back(std::make_pair(h6.second, (15.5-14)*10));
-	data.push_back(std::make_pair(h7.second, (16-14)*10));
-	data.push_back(std::make_pair(h8.second, (16.5-14)*10));
-	MakePlotMaxVsRun(data);
+	std::vector<Data*> dataKeys;
+	dataKeys.push_back(new Data(h1.second, h1.second, (13-14)*10 + 10));
+	dataKeys.push_back(new Data(h2.second, h1.second, (13.5-14)*10 + 10));
+	dataKeys.push_back(new Data(h3.second, h1.second, (14-14)*10 + 10));
+	dataKeys.push_back(new Data(h4.second, h1.second, (14.5-14)*10 + 10));
+	dataKeys.push_back(new Data(h5.second, h1.second, (15-14)*10 + 10));
+	dataKeys.push_back(new Data(h6.second, h1.second, (15.5-14)*10 + 10));
+	dataKeys.push_back(new Data(h7.second, h1.second, (16-14)*10 + 10));
+	dataKeys.push_back(new Data(h8.second, h1.second, (16.5-14)*10 + 10));
+	MakePlotMaxVsRun(dataKeys);
+
+	std::vector<Data*> data;
+	data.push_back(new Data(h1.second, h1.second, (13-14)*10 + 10));
+	data.push_back(new Data(h2.second, h2.second, (13.5-14)*10 + 10));
+	data.push_back(new Data(h3.second, h3.second, (14-14)*10 + 10));
+	data.push_back(new Data(h4.second, h4.second, (14.5-14)*10 + 10));
+	data.push_back(new Data(h5.second, h5.second, (15-14)*10 + 10));
+	data.push_back(new Data(h6.second, h6.second, (15.5-14)*10 + 10));
+	data.push_back(new Data(h7.second, h7.second, (16-14)*10 + 10));
+	data.push_back(new Data(h8.second, h8.second, (16.5-14)*10 + 10));
+	
+	TCanvas* c2 = new TCanvas("c2", "c2");
+	TH2F* h2D = MakeTH2FromTH1s(data);
+	   h2D->SetBarWidth(4);
+   h2D->SetFillStyle(0);
+   h2D->SetFillColor(kGray);
+   h2D->SetLineColor(kBlue);
+   h2D->GetYaxis()->SetTitle("time");
+   h2D->GetXaxis()->SetTitle("probability density");
+	h2D->Draw("violiny(12000000)");
 }
