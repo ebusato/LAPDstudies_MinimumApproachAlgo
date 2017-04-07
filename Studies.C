@@ -25,7 +25,7 @@ std::pair<TH1F*, TH1F*> GetZDistr(TString fileName, TString histoName, int color
   hKeys->SetLineColor(color);
   
 //   h->Scale(1/h->Integral());
-  hKeys->Scale(0.001*h->GetMaximum()/hKeys->GetMaximum());
+  hKeys->Scale(h->GetMaximum()/hKeys->GetMaximum());
   
   
   return std::make_pair(h, hKeys);
@@ -56,17 +56,30 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 	g->SetMarkerSize(1.5);
 	g->Draw("ap");
 	g->GetXaxis()->SetTitle("z_{ target} - z_{ target}^{0} [mm]");
-	g->GetYaxis()->SetTitle("z_{ reco} - z_{ reco}^{0} [mm]");
+	g->GetYaxis()->SetTitle("mode[z_{ reco}] - mode[z_{ reco}^{0}] [mm]");
+	g->GetXaxis()->SetTitleSize(0.06);
+	g->GetYaxis()->SetTitleSize(0.06);
+	g->GetXaxis()->SetTitleOffset(1.25);
+	g->GetYaxis()->SetTitleOffset(1.1);
+	g->GetXaxis()->SetLabelSize(0.06);
+	g->GetYaxis()->SetLabelSize(0.06);
 	g->GetXaxis()->SetNdivisions(10);
 	g->GetYaxis()->SetNdivisions(10);
 	TF1* f = new TF1("f", "x", -20, 40);
 	f->Draw("same");
 // 	g->Draw("apsame");
+	
+	
+	PutText(0.27, 0.75, kBlack, "LAPD");
+	PutText(0.27, 0.67, kBlack, "^{22}Na (14 kBq)");
 }
 
 TH2F* MakeTH2FromTH1s(std::vector<Data*> data)
 {
-	TH2F* h = new TH2F("h", "h", data[0]->m_h->GetNbinsX(), data[0]->m_h->GetXaxis()->GetXmin(), data[0]->m_h->GetXaxis()->GetXmax(), data.size(), data[0]->m_z, data[data.size()-1]->m_z);
+	int nBinsExcess = 3;
+	TH2F* h = new TH2F("h", "h", data[0]->m_h->GetNbinsX(), data[0]->m_h->GetXaxis()->GetXmin(), data[0]->m_h->GetXaxis()->GetXmax(), data.size()+nBinsExcess, data[0]->m_z-2.5, 
+data[data.size()-1]->m_z+2.5+5*nBinsExcess);
+// 	TH2F* h = new TH2F("h", "h", data[0]->m_h->GetNbinsX(), data[0]->m_h->GetXaxis()->GetXmin(), data[0]->m_h->GetXaxis()->GetXmax(), 8, -2.5, 37.5);
 	for(int i=0; i<data.size(); i++)
 	{
 		for(int j=0; j<data[0]->m_h->GetNbinsX(); j++) {
@@ -76,6 +89,12 @@ TH2F* MakeTH2FromTH1s(std::vector<Data*> data)
 // 			}
 		}
 	}
+	h->GetXaxis()->SetTitleSize(0.06);
+	h->GetYaxis()->SetTitleSize(0.06);
+	h->GetXaxis()->SetTitleOffset(1.25);
+	h->GetYaxis()->SetTitleOffset(1.1);
+	h->GetXaxis()->SetLabelSize(0.06);
+	h->GetYaxis()->SetLabelSize(0.06);
 	return h;
 }
 
@@ -151,10 +170,14 @@ void Studies()
 	TCanvas* c2 = new TCanvas("c2", "c2");
 	TH2F* h2D = MakeTH2FromTH1s(data);
 	   h2D->SetBarWidth(4);
-   h2D->SetFillStyle(0);
-   h2D->SetFillColor(kGray);
+   h2D->SetFillStyle(3004);
+   h2D->SetFillColor(kBlue);
    h2D->SetLineColor(kBlue);
-   h2D->GetYaxis()->SetTitle("time");
-   h2D->GetXaxis()->SetTitle("probability density");
+   h2D->GetYaxis()->SetTitle("z_{ target} - z_{ target}^{0} [mm]");
+   h2D->GetXaxis()->SetTitle("z_{ reco} [mm]");
+   h2D->GetXaxis()->SetRangeUser(-70,70);
 	h2D->Draw("violiny(12000000)");
+	PutText(0.22, 0.8, kBlack, "LAPD");
+	PutText(0.22, 0.73, kBlack, "^{22}Na (14 kBq)");
+//    h2D->Draw("colz");
 }
