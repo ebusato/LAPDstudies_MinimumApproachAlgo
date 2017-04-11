@@ -1,7 +1,7 @@
 
 using namespace RooFit;
 
-TH1F* MakeKernelPDFFromTH1(TH1F* h, int color)
+TH1F* MakeKernelPDFFromTH1(TH1F* h, int color, double rho)
 {
   RooRealVar* z = new RooRealVar("z", "z", -100, 100);
   z->setBins(10000);
@@ -19,7 +19,7 @@ TH1F* MakeKernelPDFFromTH1(TH1F* h, int color)
   RooDataHist* dh = new RooDataHist("dh", "dh", *z, Import(*h));
   
 //   RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::MirrorBoth, 2) ;
-  RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::NoMirror, 2) ;
+  RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::NoMirror, rho) ;
 //   RooPlot* frame = z->frame() ;
 // //   ds->plotOn(frame);
 //   dh->plotOn(frame);
@@ -38,6 +38,7 @@ TH1F* MakeKernelPDFFromTH1(TH1F* h, int color)
   hKeys->GetXaxis()->SetTitleSize(0.06);
   hKeys->GetXaxis()->SetLabelSize(0.055);
   hKeys->GetXaxis()->SetTitleOffset(1.37);
+  hKeys->SetLineWidth(1);
   for(int i=0; i<hKeys->GetNbinsX(); i++) {
 	  hKeys->SetBinError(i, 0);
 // 	cout << "i, Err: " << i << "  " << hKeys->GetXaxis()->GetBinCenter(i) << "  " << hKeys->GetBinError(i) << endl;  

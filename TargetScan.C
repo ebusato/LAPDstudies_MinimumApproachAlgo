@@ -82,8 +82,8 @@ TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, int color) : m_tree(t),
 void TargetScan()
 {
 	TFile* f0 = new TFile("analysis_v2.18-calibG2/run91LOR.root", "read");
+// 	TFile* f0 = new TFile("analysis_v2.18-calibG2/run110LOR.root", "read");
 	TFile* f1 = new TFile("analysis_v2.18-calibG2/run110LOR.root", "read");
-// 	TFile* f1 = new TFile("analysis_v2.18-calibG2/run91LOR.root", "read");
 	
 // 	TFile* f0 = new TFile("analysis_v2.18-calibG2/run98LOR.root", "read");
 // 	TFile* f1 = new TFile("analysis_v2.18-calibG2/run99LOR.root", "read");
@@ -93,6 +93,7 @@ void TargetScan()
 	
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 60000", kBlue);
 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 60000", kRed);
+// 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 60000", kRed);
 	
 	std::vector<TreeAnalysis*> vec;
 	vec.push_back(tAna_0);
@@ -146,7 +147,7 @@ void TargetScan()
 		TString hName("hZmar");
 		hName+=i;
 		TH1F* hZmar = Draw(vec[i]->m_tree, "LORZmar", vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 2000, -100, 100, vec[i]->m_color, 3);
-		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color);
+		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 2);
 		hZmar->Scale(1/hZmar->Integral());
 		hZmar->Draw();
 		hKeys->Scale(hZmar->GetMaximum()/hKeys->GetMaximum());
@@ -189,5 +190,8 @@ vec[i-1]->m_coords->m_high)));
 		}
 	}
 	PutText(0.54, 0.81, kBlack, "LAPD");
+	PutText(0.54, 0.81, kBlack, "Protons 65 MeV, I = 5 nA ");
 	PutText(0.54, 0.75, kBlack, "Targets: PMMA 5 #times 5 cm");
+	
+	c4->SaveAs("TargetScan_c4.png");
 }

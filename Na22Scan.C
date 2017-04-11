@@ -9,7 +9,7 @@ std::pair<TH1F*, TH1F*> GetZDistr(TString fileName, TString histoName, int color
   TString toPlot("LORZmar");
   toPlot += ">>";
   toPlot += histoName;
-//   t->Draw(toPlot, "NoLORs == 1", "", 1000);
+//   t->Draw(toPlot, "NoLORs == 1", "", 3000);
    t->Draw(toPlot, "NoLORs == 1");
   h->SetLineColor(color);
   h->SetFillColor(color);
@@ -17,12 +17,11 @@ std::pair<TH1F*, TH1F*> GetZDistr(TString fileName, TString histoName, int color
 //   h->SetMaximum(2000);
   //h->Fit("gaus");
   h->GetXaxis()->SetRangeUser(xmin,xmax);
+  h->GetYaxis()->SetRangeUser(0, h->GetMaximum());
   h->GetXaxis()->SetTitle("z_{MAR} [cm]");
   h->GetYaxis()->SetTitle("Entries (a.u.)");
-  
-  	
-  TH1F* hKeys = MakeKernelPDFFromTH1(h, color);
-  hKeys->SetLineColor(color);
+
+  TH1F* hKeys = MakeKernelPDFFromTH1(h, color, 1.2);
   
 //   h->Scale(1/h->Integral());
   hKeys->Scale(h->GetMaximum()/hKeys->GetMaximum());
@@ -52,7 +51,6 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 		TH1F* h0 = data[i]->m_h0;
 		g->SetPoint(i, data[i]->m_z, h->GetBinCenter(h->GetMaximumBin()) - h0->GetBinCenter(h0->GetMaximumBin()));
 	}
-	TCanvas* c = new TCanvas("c", "c");
 	g->SetMarkerSize(1.5);
 	g->Draw("ap");
 	g->GetXaxis()->SetTitle("z_{ target} - z_{ target}^{0} [mm]");
@@ -102,37 +100,55 @@ void Na22Scan()
 {
 	gStyle->SetPadGridX(1);
 	gStyle->SetPadGridY(1);
-	TCanvas* c1 = new TCanvas("c1", "c1");
-	std::pair<TH1F*, TH1F*> h1 = GetZDistr("analysis_v2.18-calibG2/run98LOR.root", "h1", kBlack);
-	std::pair<TH1F*, TH1F*> h2 = GetZDistr("analysis_v2.18-calibG2/run99LOR.root", "h2", kRed);
-	std::pair<TH1F*, TH1F*> h3 = GetZDistr("analysis_v2.18-calibG2/run100LOR.root", "h3", kBlue);
-	std::pair<TH1F*, TH1F*> h4 = GetZDistr("analysis_v2.18-calibG2/run101LOR.root", "h4", kGreen+3);
-	std::pair<TH1F*, TH1F*> h5 = GetZDistr("analysis_v2.18-calibG2/run102LOR.root", "h5", kYellow);
-	std::pair<TH1F*, TH1F*> h6 = GetZDistr("analysis_v2.18-calibG2/run103LOR.root", "h6", kOrange);
-	std::pair<TH1F*, TH1F*> h7 = GetZDistr("analysis_v2.18-calibG2/run104LOR.root", "h7", kMagenta);
-	std::pair<TH1F*, TH1F*> h8 = GetZDistr("analysis_v2.18-calibG2/run105LOR.root", "h8", kBlue+2);
+	double xmin = -50;
+	double xmax = 50;
+	std::pair<TH1F*, TH1F*> h1 = GetZDistr("analysis_v2.18-calibG2/run98LOR.root", "h1", kBlack, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h2 = GetZDistr("analysis_v2.18-calibG2/run99LOR.root", "h2", kRed, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h3 = GetZDistr("analysis_v2.18-calibG2/run100LOR.root", "h3", kBlue, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h4 = GetZDistr("analysis_v2.18-calibG2/run101LOR.root", "h4", kGreen+3, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h5 = GetZDistr("analysis_v2.18-calibG2/run102LOR.root", "h5", kYellow, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h6 = GetZDistr("analysis_v2.18-calibG2/run103LOR.root", "h6", kOrange, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h7 = GetZDistr("analysis_v2.18-calibG2/run104LOR.root", "h7", kMagenta, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h8 = GetZDistr("analysis_v2.18-calibG2/run105LOR.root", "h8", kBlue+2, xmin, xmax);
+	
+	TCanvas* c0 = new TCanvas("c0", "c0");
+	c0->Divide(4,2);
+	c0->cd(1);
 	h1.first->Draw();
-	h2.first->Draw("same");
-	h3.first->Draw("same");
-	h4.first->Draw("same");
-	h5.first->Draw("same");
-	h6.first->Draw("same");
-	h7.first->Draw("same");
-	h8.first->Draw("same");
-
 	h1.second->Draw("same");
+	c0->cd(2);
+	h2.first->Draw();
 	h2.second->Draw("same");
+	c0->cd(3);
+	h3.first->Draw();
 	h3.second->Draw("same");
+	c0->cd(4);
+	h4.first->Draw();
 	h4.second->Draw("same");
+	c0->cd(5);
+	h5.first->Draw();
 	h5.second->Draw("same");
+	c0->cd(6);
+	h6.first->Draw();
 	h6.second->Draw("same");
+	c0->cd(7);
+	h7.first->Draw();
 	h7.second->Draw("same");
+	c0->cd(8);
+	h8.first->Draw();
 	h8.second->Draw("same");
 	
+	TCanvas* c0_ForPresentation = new TCanvas("c0_ForPresentation", "c0_ForPresentation");
+	h4.first->GetYaxis()->SetRangeUser(0, h4.first->GetMaximum()*1.2);
+	h4.first->Draw();
+	h4.second->Draw("same");
 	gPad->SetGridx();
 	gPad->SetGridy();
-	PutText(0.5, 0.89, kBlack, "LAPD");
-	PutText(0.5, 0.82, kBlack, "^{22}Na (16 kBq) - 5mm scan");
+	PutText(0.25, 0.8, kBlack, "LAPD");
+	PutText(0.25, 0.73, kBlack, "^{22}Na (14 kBq)");
+	gPad->Update();
+	
+	/*
 	TLegend* leg = new TLegend(0.7,0.3,0.9,0.75);
 	leg->SetBorderSize(0);
 	leg->AddEntry(h1.first, "z = 13 cm", "l");
@@ -144,8 +160,11 @@ void Na22Scan()
 	leg->AddEntry(h7.first, "z = 16 cm", "l");
 	leg->AddEntry(h8.first, "z = 16.5 cm", "l");
 	leg->Draw();
-	c1->SaveAs("c1.png");
+	*/
 	
+	c0->SaveAs("Na22Scan_c0.png");
+	
+	TCanvas* c1 = new TCanvas("c1", "c1");
 	std::vector<Data*> dataKeys;
 	dataKeys.push_back(new Data(h1.second, h1.second, (13-14)*10 + 10));
 	dataKeys.push_back(new Data(h2.second, h1.second, (13.5-14)*10 + 10));
@@ -156,7 +175,8 @@ void Na22Scan()
 	dataKeys.push_back(new Data(h7.second, h1.second, (16-14)*10 + 10));
 	dataKeys.push_back(new Data(h8.second, h1.second, (16.5-14)*10 + 10));
 	MakePlotMaxVsRun(dataKeys);
-
+	c1->SaveAs("Na22Scan_c1.png");
+	
 	std::vector<Data*> data;
 	data.push_back(new Data(h1.second, h1.second, (13-14)*10 + 10));
 	data.push_back(new Data(h2.second, h2.second, (13.5-14)*10 + 10));
@@ -169,15 +189,16 @@ void Na22Scan()
 	
 	TCanvas* c2 = new TCanvas("c2", "c2");
 	TH2F* h2D = MakeTH2FromTH1s(data);
-	   h2D->SetBarWidth(4);
-   h2D->SetFillStyle(3004);
-   h2D->SetFillColor(kBlue);
-   h2D->SetLineColor(kBlue);
-   h2D->GetYaxis()->SetTitle("z_{ target} - z_{ target}^{0} [mm]");
-   h2D->GetXaxis()->SetTitle("z_{ reco} [mm]");
-   h2D->GetXaxis()->SetRangeUser(-70,70);
+	h2D->SetBarWidth(4);
+	h2D->SetFillStyle(3004);
+	h2D->SetFillColor(kBlue);
+	h2D->SetLineColor(kBlue);
+	h2D->GetYaxis()->SetTitle("z_{ target} - z_{ target}^{0} [mm]");
+	h2D->GetXaxis()->SetTitle("z_{ reco} [mm]");
+	h2D->GetXaxis()->SetRangeUser(-70,70);
 	h2D->Draw("violiny(12000000)");
 	PutText(0.22, 0.8, kBlack, "LAPD");
 	PutText(0.22, 0.73, kBlack, "^{22}Na (14 kBq)");
 //    h2D->Draw("colz");
+	c2->SaveAs("Na22Scan_c2.png");
 }
