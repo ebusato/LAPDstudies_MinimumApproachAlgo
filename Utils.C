@@ -34,7 +34,7 @@ TH1F* MakeKernelPDFFromTH1(TH1F* h, int color)
   hKeys->GetYaxis()->SetTitleSize(0.06);
   hKeys->GetYaxis()->SetLabelSize(0.055);
   hKeys->GetYaxis()->SetTitleOffset(1.39);
-  hKeys->GetXaxis()->SetTitle("z [mm]");
+  hKeys->GetXaxis()->SetTitle("z_{MAR} [mm]");
   hKeys->GetXaxis()->SetTitleSize(0.06);
   hKeys->GetXaxis()->SetLabelSize(0.055);
   hKeys->GetXaxis()->SetTitleOffset(1.37);

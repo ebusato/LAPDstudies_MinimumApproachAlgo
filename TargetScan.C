@@ -1,6 +1,6 @@
 #include "Utils.C"
 
-TH1F* Draw(TTree* t, TString var, TCut cut, TString hName, int Nbins, double xmin, double xmax, int color, int linesize, bool normalize=false)
+TH1F* Draw(TTree* t, TString var, TCut cut, TString hName, int Nbins, double xmin, double xmax, int color, int linesize)
 {
 	TH1F* h = new TH1F(hName.Data(), hName.Data(), Nbins, xmin, xmax);
 	TString temp(var);
@@ -8,10 +8,8 @@ TH1F* Draw(TTree* t, TString var, TCut cut, TString hName, int Nbins, double xmi
 	temp+=hName;
 	t->Draw(temp.Data(), cut);
 	h->SetLineColor(color);
+	h->SetMarkerColor(color);
 	h->SetLineWidth(linesize);
-	if(normalize) {
-		h->Scale(1/h->Integral());
-	}
 	return h;
 }
 
@@ -46,16 +44,40 @@ double Maximum(TH1F* h)
 	return max;
 }
 
-HalfMaxCoords FindHalfMaxCoords(TH1F* h)
+HalfMaxCoords* FindHalfMaxCoords(TH1F* h)
 {
    double max = Maximum(h);
    int bin1 = h->FindFirstBinAbove(max/2.);
    int bin2 = h->FindLastBinAbove(max/2.);
-   HalfMaxCoords coords;
-   coords.m_low = h->GetBinCenter(bin1);
-   coords.m_high = h->GetBinCenter(bin2);
+   HalfMaxCoords* coords = new HalfMaxCoords();
+   coords->m_low = h->GetBinCenter(bin1);
+   coords->m_high = h->GetBinCenter(bin2);
    return coords;
 }
+
+class TreeAnalysis {
+public:
+	TreeAnalysis(TTree* t, TCut cut, int color);
+	TTree* m_tree;
+	TCut m_cutTimes;
+	TCut m_cutLOR;
+	TCut m_cutBeamPause;
+	TCut m_cutEvents;
+	int m_color;	
+	
+	TH1F* m_hKeys;
+	HalfMaxCoords* m_coords;
+};
+
+TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, int color) : m_tree(t),
+							    m_cutEvents(cutEvents),
+							    m_color(color)
+{
+	m_cutTimes = "T30[LORIdx1] > 20 && T30[LORIdx1] < 50 && T30[LORIdx2] > 20 && T30[LORIdx2] < 50";
+	m_cutLOR = "NoLORs == 1 && LORRmar < 25";
+	m_cutBeamPause = "abs(LORTMean - LORTRF - 7) > 5";
+}
+
 
 void TargetScan()
 {
@@ -69,90 +91,103 @@ void TargetScan()
 	TTree* t0 = (TTree*) f0->Get("tree");
 	TTree* t1 = (TTree*) f1->Get("tree");
 	
-	TCut cutTimes("T30[LORIdx1] > 20 && T30[LORIdx1] < 50 && T30[LORIdx2] > 20 && T30[LORIdx2] < 50 && LORRmar < 25");
-	TCut cutSpillOut("abs(LORTMean - LORTRF - 7) > 5");
-	TCut cut = cutTimes && cutSpillOut;
+	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 60000", kBlue);
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 60000", kRed);
 	
-// 	TCut cut0 = "Evt > 2000 && Evt < 60000";
-// 	TCut cut1 = "Evt > 2000 && Evt < 60000";
-	
-	TCut cut0 = "NoLORs == 1 && Evt > 2000 && Evt < 60000";
-	TCut cut1 = "NoLORs == 1 && Evt > 2000 && Evt < 60000";
+	std::vector<TreeAnalysis*> vec;
+	vec.push_back(tAna_0);
+	vec.push_back(tAna_1);
 	
 	TCanvas* c0 = new TCanvas("c0", "c0");
-	c0->Divide(2,2);
-	c0->cd(1);
-	t0->Draw("RateLvsL3 : Evt");
-	c0->cd(2);
-	t1->Draw("RateLvsL3 : Evt");
-	c0->cd(3);
-	t0->Draw("RateLvsL3 : Evt", cut0);
-	c0->cd(4);
-	t1->Draw("RateLvsL3 : Evt", cut1);
-	
+	c0->Divide(vec.size(), 2);
+	for(int i=0; i<vec.size(); i++) {
+		c0->cd(i+1);
+		vec[i]->m_tree->Draw("RateLvsL3 : Evt");
+		c0->cd(i+1+vec.size());
+		vec[i]->m_tree->Draw("RateLvsL3 : Evt", vec[i]->m_cutEvents);
+	}
 	
 	TCanvas* c1 = new TCanvas("c1", "c1");
-	c1->Divide(2,1);
-	c1->cd(1);
-	TH2F* hArnaud_0 = new TH2F("hArnaud_0", "hArnaud_0", 100, 0, 40, 200, 0, 1000);
-	t0->Draw("E[LORIdx1] : LORTMean - LORTRF>>hArnaud_0",  cut0 && cutTimes, "colz");
-	t0->Draw("E[LORIdx2] : LORTMean - LORTRF>>+hArnaud_0",  cut0 && cutTimes, "colz");
-	hArnaud_0->Draw("colz");
-	c1->cd(2);
-	TH2F* hArnaud_1 = new TH2F("hArnaud_1", "hArnaud_1", 100, 0, 40, 200, 0, 1000);
-	t1->Draw("E[LORIdx1] : LORTMean - LORTRF>>hArnaud_1",  cut1 && cutTimes, "colz");
-	t1->Draw("E[LORIdx2] : LORTMean - LORTRF>>+hArnaud_1",  cut1 && cutTimes, "colz");
-	hArnaud_1->Draw("colz");
+	c1->Divide(vec.size(),1);
+	for(int i=0; i<vec.size(); i++) {
+		c1->cd(i+1);
+		TString hName("hArnaud");
+		hName+=i;
+		TH2F* hArnaud = new TH2F(hName.Data(), hName.Data(), 100, 0, 40, 200, 0, 1000);
+		TString cmd1("E[LORIdx1] : LORTMean - LORTRF>>");
+		TString cmd2(cmd1);
+		cmd1+=hName;
+		cmd2+="+";
+		cmd2+=hName;
+		vec[i]->m_tree->Draw(cmd1.Data(), vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutLOR, "colz");
+		vec[i]->m_tree->Draw(cmd2.Data(), vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutLOR, "colz");
+		hArnaud->Draw("colz");
+	}
 	
 	TCanvas* c2 = new TCanvas("c2", "c2");
-	TH1F* hETemp_0 = Draw(t0, "E[LORIdx1]", cut0 && cut, "hE_01", 100, 0, 1000, kRed, 1);
-	TH1F* hE_0 = Draw(t0, "E[LORIdx2]", cut0 && cut, "hE_02", 100, 0, 1000, kRed, 1);
-	hE_0->Add(hETemp_0);
-	TH1F* hETemp_1 = Draw(t1, "E[LORIdx1]", cut1 && cut, "hE_11", 100, 0, 1000, kBlue, 1);
-	TH1F* hE_1 = Draw(t1, "E[LORIdx2]", cut1 && cut, "hE_12", 100, 0, 1000, kBlue, 1);
-	hE_1->Add(hETemp_1);
-	hE_0->Draw();
-	hE_1->Draw("same");
+	c2->Divide(vec.size(),1);
+	for(int i=0; i<vec.size(); i++) {
+		c2->cd(i+1);
+		TString hNameTemp("hETemp");
+		hNameTemp+=i;
+		TString hName("hE");
+		hName+=i;
+		TH1F* hETemp = Draw(vec[i]->m_tree, "E[LORIdx1]", vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hNameTemp.Data(), 100, 0, 1000, vec[i]->m_color, 1);
+		TH1F* hE = Draw(vec[i]->m_tree, "E[LORIdx2]", vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 100, 0, 1000, vec[i]->m_color, 1);
+		hE->Add(hETemp);
+		cout << "name = " << hE->GetName() << " " << hE->GetEntries() << endl;
+		hE->Draw("");
+	}
 	
 	TCanvas* c3 = new TCanvas("c3", "c3");
-	TH1F* hZmar_0 = Draw(t0, "LORZmar", cut0 && cut, "hZmar", 2000, -100, 100, kRed, 4);
-	TH1F* hZmar_1 = Draw(t1, "LORZmar", cut1 && cut, "hZmar", 2000, -100, 100, kGreen+2, 1);
-	TH1F* hKeys_0 = MakeKernelPDFFromTH1(hZmar_0, kMagenta);
-	TH1F* hKeys_1 = MakeKernelPDFFromTH1(hZmar_1, kBlue);
-	hZmar_0->Scale(1/hZmar_0->Integral());
-	hZmar_0->Draw();
-	hZmar_1->Scale(1/hZmar_1->Integral());
-	hZmar_1->Draw("same");
-	
-	hKeys_0->Scale(hZmar_0->GetMaximum()/hKeys_0->GetMaximum());
-	hKeys_0->GetYaxis()->SetRangeUser(0, hKeys_0->GetMaximum()*1.2);
-	hKeys_0->GetXaxis()->SetRangeUser(-50, 30);
-	hKeys_0->Draw("same");
-	hKeys_1->Scale(Maximum(hKeys_0)/Maximum(hKeys_1));
-	hKeys_1->GetXaxis()->SetRangeUser(-50, 30);
-	hKeys_1->Draw("same");
-	
+	c3->Divide(vec.size(),1);
+	for(int i=0; i<vec.size(); i++) {
+		c3->cd(i+1);
+		TString hName("hZmar");
+		hName+=i;
+		TH1F* hZmar = Draw(vec[i]->m_tree, "LORZmar", vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 2000, -100, 100, vec[i]->m_color, 3);
+		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color);
+		hZmar->Scale(1/hZmar->Integral());
+		hZmar->Draw();
+		hKeys->Scale(hZmar->GetMaximum()/hKeys->GetMaximum());
+		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.25);
+		hKeys->GetXaxis()->SetRangeUser(-50, 50);
+		hKeys->Draw("same");
+		vec[i]->m_hKeys = hKeys;
+	}
 	
 	TCanvas* c4 = new TCanvas("c4", "c4");
 	gPad->SetGridx(1);
 	gPad->SetGridy(1);
-	hKeys_0->Draw();
-	hKeys_1->Draw("same");
-	HalfMaxCoords coords_0 = FindHalfMaxCoords(hKeys_0);
-	coords_0.Print();
-	HalfMaxCoords coords_1 = FindHalfMaxCoords(hKeys_1);
-	coords_1.Print();
-	cout << "Delta z = " << coords_0.m_high - coords_1.m_high << " mm " << endl;
-	
-	cout << "maximum = " << Maximum(hKeys_0) << "  " << Maximum(hKeys_1) << endl;
-	
-	TArrow* arr = new TArrow(coords_1.m_high, Maximum(hKeys_1)/2., coords_0.m_high, Maximum(hKeys_0)/2., 0.015, "<|-|>");
-	arr->SetLineColor(kBlack);
-	arr->SetFillColor(kBlack);
-	arr->SetAngle(48);
-	arr->Draw();
-	TLatex l;
-	l.SetTextColor(kBlack);
-	l.SetTextSize(0.05);
-	l.DrawLatex((coords_0.m_high + coords_1.m_high)/2.+5, Maximum(hKeys_1)/2.+0., Form("#Delta z = %.1f mm", coords_0.m_high - coords_1.m_high));
+	double max0 = Maximum(vec[0]->m_hKeys);
+	HalfMaxCoords* coords0 = FindHalfMaxCoords(vec[0]->m_hKeys);
+	vec[0]->m_coords = coords0;
+	coords0->Print();
+	cout << "max0 = " << max0 << endl;
+	for(int i=0; i<vec.size(); i++) {
+		double max = Maximum(vec[i]->m_hKeys);
+		if(i == 0) {
+			vec[i]->m_hKeys->Draw();
+		} else {
+			vec[i]->m_hKeys->Scale(max0/max);
+			vec[i]->m_hKeys->Draw("same");
+			
+			HalfMaxCoords* coords = FindHalfMaxCoords(vec[i]->m_hKeys);
+			coords->Print();
+			vec[i]->m_coords = coords;
+			cout << "maximum = " << Maximum(vec[i]->m_hKeys) << endl;
+			TArrow* arr = new TArrow(vec[i]->m_coords->m_high, max0/2., vec[i-1]->m_coords->m_high, max0/2., 0.015, "<|-|>");
+			arr->SetLineColor(kBlack);
+			arr->SetFillColor(kBlack);
+			arr->SetAngle(48);
+			arr->Draw();
+			TLatex l;
+			l.SetTextColor(kBlack);
+			l.SetTextSize(0.05);
+			l.DrawLatex((vec[i]->m_coords->m_high + vec[i-1]->m_coords->m_high)/2.+5, max0/2.+0., Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_high - 
+vec[i-1]->m_coords->m_high)));
+		}
+	}
+	PutText(0.54, 0.81, kBlack, "LAPD");
+	PutText(0.54, 0.75, kBlack, "Targets: PMMA 5 #times 5 cm");
 }
