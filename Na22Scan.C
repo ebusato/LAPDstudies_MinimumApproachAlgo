@@ -9,8 +9,8 @@ std::pair<TH1F*, TH1F*> GetZDistr(TString fileName, TString histoName, int color
   TString toPlot("LORZmar");
   toPlot += ">>";
   toPlot += histoName;
-  t->Draw(toPlot, "NoLORs == 1", "", 1000);
-//    t->Draw(toPlot, "NoLORs == 1");
+//   t->Draw(toPlot, "NoLORs == 1", "", 1000);
+   t->Draw(toPlot, "NoLORs == 1");
   h->SetLineColor(color);
   h->SetFillColor(color);
   h->SetFillStyle(3002);
@@ -21,7 +21,7 @@ std::pair<TH1F*, TH1F*> GetZDistr(TString fileName, TString histoName, int color
   h->GetYaxis()->SetTitle("Entries (a.u.)");
   
   	
-  TH1F* hKeys = MakeKernelPDFFromTH1(h);
+  TH1F* hKeys = MakeKernelPDFFromTH1(h, color);
   hKeys->SetLineColor(color);
   
 //   h->Scale(1/h->Integral());
@@ -98,7 +98,7 @@ data[data.size()-1]->m_z+2.5+5*nBinsExcess);
 	return h;
 }
 
-void Studies() 
+void Na22Scan() 
 {
 	gStyle->SetPadGridX(1);
 	gStyle->SetPadGridY(1);
