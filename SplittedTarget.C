@@ -9,11 +9,12 @@ void SplittedTarget(TTree* t, TCut cut, int color)
         h->SetFillColor(color);
         h->SetFillStyle(3002);
 	h->GetYaxis()->SetRangeUser(0, h->GetMaximum());
-	h->GetXaxis()->SetTitle("z_{MAR} [cm]");
-	h->GetYaxis()->SetTitle("Entries (a.u.)");
+	
+	h->GetXaxis()->SetTitle("z_{MAR} [mm]");
+	h->GetYaxis()->SetTitle("Entries");
 	
 	TH1F* hKeys = MakeKernelPDFFromTH1(h, kRed, 1);
-	hKeys->Scale(h->GetMaximum()/hKeys->GetMaximum());
+	hKeys->Scale(h->GetMaximum()*1.2/hKeys->GetMaximum());
 	
 	gStyle->SetPadGridX(1);
 	gStyle->SetPadGridY(1);
@@ -22,6 +23,10 @@ void SplittedTarget(TTree* t, TCut cut, int color)
 	
 	h->Draw();
 	hKeys->Draw("same");
+	
+	PutText(0.5, 0.8, kBlack, "LAPD", 0.05);
+	PutText(0.5, 0.72, kBlack, "Protons 65 MeV, I = 5 nA ", 0.05);
+	PutText(0.5, 0.64, kBlack, "Target PMMA slabs", 0.05);
 }
 
 void SplittedTarget()
@@ -41,11 +46,13 @@ void SplittedTarget()
 	TCanvas* c1 = new TCanvas("c1", "c1");
 	SplittedTarget(t, cutDesactivation, kRed);
 	
+	/*
 	TCut cutBeamPause = "abs(LORTMean - LORTRF - 7) > 5";
 	TCut cutEventsInBeam = "Evt > 2000 && Evt < 42000"; 
 	TCut cutInBeam = cutTimes && cutLOR && cutBeamPause && cutEventsInBeam;
 	
 	TCanvas* c2 = new TCanvas("c2", "c2");
 	SplittedTarget(t, cutInBeam, kGreen+2);
+	*/
 	
 }
