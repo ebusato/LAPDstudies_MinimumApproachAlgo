@@ -5,7 +5,7 @@ void MakePlotSplittedMax()
   cMaxSplitted->SetGridy(1);
 
   TNtuple* nt = new TNtuple("nt","nt","x:y");
-  nt->ReadFile("SplittedTargetMaxFromWebPlotDigitizer.dat");
+  nt->ReadFile("SplittedTargetMaxFromWebPlotDigitizer2.dat");
   int n = nt->Draw("x+81.2:Entry$*19.5","","goff");
   TGraph *g = new TGraph(n,nt->GetV1(),nt->GetV2());
   g->Draw("ap");
@@ -30,4 +30,11 @@ void MakePlotSplittedMax()
   PutText(0.25, 0.64, kBlack, "Target PMMA slabs", 0.05);
 
   cMaxSplitted->SaveAs("cMaxSplitted.png");
+
+  TCanvas* cMaxSplitted2 = new TCanvas("cMaxSplitted2","cMaxSplitted2");
+  nt->Draw("x+81.2:Entry$","","goff");
+  TGraph *g2 = new TGraph(n,nt->GetV2(),nt->GetV1());
+  g2->Draw("ap");
+  TF1* fitFunc = new TF1("fitFunc","[0]*x");
+  g2->Fit("fitFunc");
 }
