@@ -69,7 +69,7 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 	
 	
 	PutText(0.27, 0.75, kBlack, "LAPD");
-	PutText(0.27, 0.67, kBlack, "^{22}Na (14 kBq)");
+	PutText(0.27, 0.67, kBlack, "^{22}Na (14.4 kBq)");
 }
 
 TH2F* MakeTH2FromTH1s(std::vector<Data*> data)
