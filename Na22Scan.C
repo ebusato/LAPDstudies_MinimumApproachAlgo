@@ -53,7 +53,7 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 	}
 	g->SetMarkerSize(1.5);
 	g->Draw("ap");
-	g->GetXaxis()->SetTitle("z_{ target} - z_{ target}^{0} [mm]");
+	g->GetXaxis()->SetTitle("z_{ source} - z_{ source}^{0} [mm]");
 	g->GetYaxis()->SetTitle("mode[z_{ reco}] - mode[z_{ reco}^{0}] [mm]");
 	g->GetXaxis()->SetTitleSize(0.06);
 	g->GetYaxis()->SetTitleSize(0.06);

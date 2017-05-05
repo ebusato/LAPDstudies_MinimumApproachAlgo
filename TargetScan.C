@@ -22,14 +22,18 @@ class HalfMaxCoords {
 public:
 	void Print();
 	
-	double m_low;
-	double m_high;
+	double m_Xlow;
+	double m_Xhigh;
+	double m_Ylow;
+	double m_Yhigh;
 };
   
 void HalfMaxCoords::Print()
 {
-	cout << "m_low = " << m_low << endl;
-	cout << "m_high = " << m_high << endl;
+	cout << "m_Xlow = " << m_Xlow << endl;
+	cout << "m_Xhigh = " << m_Xhigh << endl;
+	cout << "m_Ylow = " << m_Ylow << endl;
+	cout << "m_Yhigh = " << m_Yhigh << endl;
 }
 
 double Maximum(TH1F* h)
@@ -49,9 +53,14 @@ HalfMaxCoords* FindHalfMaxCoords(TH1F* h)
    double max = Maximum(h);
    int bin1 = h->FindFirstBinAbove(max/2.);
    int bin2 = h->FindLastBinAbove(max/2.);
+   // 0.018 is the background estimated by eye !
+   //int bin1 = h->FindFirstBinAbove((max-0.018)/2.+0.018);
+   //int bin2 = h->FindLastBinAbove((max-0.018)/2.+0.018);
    HalfMaxCoords* coords = new HalfMaxCoords();
-   coords->m_low = h->GetBinCenter(bin1);
-   coords->m_high = h->GetBinCenter(bin2);
+   coords->m_Xlow = h->GetBinCenter(bin1);
+   coords->m_Xhigh = h->GetBinCenter(bin2);
+   coords->m_Ylow = h->GetBinContent(bin1);
+   coords->m_Yhigh = h->GetBinContent(bin2);
    return coords;
 }
 
@@ -91,8 +100,8 @@ void TargetScan()
 	TTree* t0 = (TTree*) f0->Get("tree");
 	TTree* t1 = (TTree*) f1->Get("tree");
 	
-	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 10000", kBlue);
-	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 10000", kRed);
+	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 3458", kBlue);
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 3458", kRed);
 // 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 60000", kRed);
 	
 	std::vector<TreeAnalysis*> vec;
@@ -177,7 +186,8 @@ void TargetScan()
 			coords->Print();
 			vec[i]->m_coords = coords;
 			cout << "maximum = " << Maximum(vec[i]->m_hKeys) << endl;
-			TArrow* arr = new TArrow(vec[i]->m_coords->m_high, max0/2., vec[i-1]->m_coords->m_high, max0/2., 0.015, "<|-|>");
+			//	TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, max0/2., vec[i-1]->m_coords->m_Xhigh, max0/2., 0.015, "<|-|>");
+					TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, vec[i]->m_coords->m_Yhigh, vec[i-1]->m_coords->m_Xhigh, vec[i-1]->m_coords->m_Yhigh, 0.015, "<|-|>");
 			arr->SetLineColor(kBlack);
 			arr->SetFillColor(kBlack);
 			arr->SetAngle(48);
@@ -185,13 +195,13 @@ void TargetScan()
 			TLatex l;
 			l.SetTextColor(kBlack);
 			l.SetTextSize(0.05);
-			l.DrawLatex((vec[i]->m_coords->m_high + vec[i-1]->m_coords->m_high)/2.+5, max0/2.+0., Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_high - 
-vec[i-1]->m_coords->m_high)));
+			l.DrawLatex((vec[i]->m_coords->m_Xhigh + vec[i-1]->m_coords->m_Xhigh)/2.+5, max0/2.+0., Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_Xhigh - 
+vec[i-1]->m_coords->m_Xhigh)));
 		}
 	}
 	PutText(0.54, 0.81, kBlack, "LAPD");
-	PutText(0.54, 0.81, kBlack, "Protons 65 MeV, I = 5 nA ");
-	PutText(0.54, 0.75, kBlack, "Targets: PMMA 5 #times 5 cm");
+	PutText(0.54, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ");
+	PutText(0.54, 0.69, kBlack, "Targets: PMMA 5 #times 5 cm");
 	
 	c4->SaveAs("TargetScan_c4.png");
 }
