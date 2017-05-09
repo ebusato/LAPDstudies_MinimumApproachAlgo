@@ -1,5 +1,23 @@
 #include "Utils.C"
 
+void FitKeysSideBand(TH1F* h, string histName, double Lmin, double Lmax, double Rmin, double Rmax)
+{
+  RooRealVar* Z = new RooRealVar("Z", "Z", -70, 70, "mm");
+  Z->setRange("R1",Lmin,Lmax);
+  Z->setRange("R2",Rmin,Rmax);
+
+  RooRealVar* mean = new RooRealVar("mean", "mean", 0, "mm");
+  RooRealVar* sigma = new RooRealVar("sigma", "width", 30, "mm");
+
+  RooGaussian* gaussian = new RooGaussian("gaussian", "gaussian", *Z, *mean, *sigma);
+
+  RooDataHist* dh = new RooDataHist(histName.c_str(), histName.c_str(), *Z, Import(*h));
+  RooHistPdf* hpdf = new RooHistPdf("histpdf","histpdf", *Z,*dh,0);
+
+
+  gaussian->fitTo(*dh), Extended(),Range("R1", "R2"));
+}
+
 TH1F* Draw(TTree* t, TString var, TCut cut, TString hName, int Nbins, double xmin, double xmax, int color, int linesize)
 {
 	TH1F* h = new TH1F(hName.Data(), hName.Data(), Nbins, xmin, xmax);
@@ -27,7 +45,7 @@ public:
 	double m_Ylow;
 	double m_Yhigh;
 };
-  
+ 
 void HalfMaxCoords::Print()
 {
 	cout << "m_Xlow = " << m_Xlow << endl;
@@ -99,9 +117,13 @@ void TargetScan()
 	
 	TTree* t0 = (TTree*) f0->Get("tree");
 	TTree* t1 = (TTree*) f1->Get("tree");
-	
+	/*
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 3458", kBlue);
 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 3458", kRed);
+	*/
+	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 10000", kBlue);
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 10000", kRed);
+
 // 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 60000", kRed);
 	
 	std::vector<TreeAnalysis*> vec;
