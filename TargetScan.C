@@ -1,21 +1,42 @@
 #include "Utils.C"
 
-void FitKeysSideBand(TH1F* h, string histName, double Lmin, double Lmax, double Rmin, double Rmax)
+TF1* FitKeysSideBand(TH1F* h, string histName, double Lmin, double Lmax, double Rmin, double Rmax)
 {
   RooRealVar* Z = new RooRealVar("Z", "Z", -70, 70, "mm");
   Z->setRange("R1",Lmin,Lmax);
   Z->setRange("R2",Rmin,Rmax);
-
-  RooRealVar* mean = new RooRealVar("mean", "mean", 0, "mm");
-  RooRealVar* sigma = new RooRealVar("sigma", "width", 30, "mm");
+  //Z->setRange("R1",-30,0);
+  RooRealVar* mean = new RooRealVar("mean", "mean", -5);
+  RooRealVar* sigma = new RooRealVar("sigma", "width", 45);
 
   RooGaussian* gaussian = new RooGaussian("gaussian", "gaussian", *Z, *mean, *sigma);
 
   RooDataHist* dh = new RooDataHist(histName.c_str(), histName.c_str(), *Z, Import(*h));
-  RooHistPdf* hpdf = new RooHistPdf("histpdf","histpdf", *Z,*dh,0);
 
+  gaussian->fitTo(*dh, Extended(),Range("R1", "R2"), SumW2Error(kTRUE));
 
-  gaussian->fitTo(*dh), Extended(),Range("R1", "R2"));
+  TF1* gaussianTF = gaussian->asTF(RooArgList(*Z), RooArgList(*mean,*sigma), RooArgSet(*Z));
+
+  return gaussianTF;
+}
+
+TH1F* Subtract(TH1F* h, TF1* f) 
+{
+  TString name(h->GetName());
+  name+="_clone";
+  TH1F* h1 = (TH1F*) h->Clone(name);
+  h1->Reset();
+  h1->Sumw2();
+  for(int i=0; i<h->GetNbinsX(); i++)
+    {
+      double content = h->GetBinContent(i);
+      double val = h->GetBinCenter(i);
+      double funcval = f->Eval(val);
+      //cout << i << "  " << val << "  " << content << "  " << funcval<< endl;
+      h1->SetBinContent(i, content-funcval);
+      //h1->Set
+    }
+  return h1;
 }
 
 TH1F* Draw(TTree* t, TString var, TCut cut, TString hName, int Nbins, double xmin, double xmax, int color, int linesize)
@@ -108,9 +129,9 @@ TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, int color) : m_tree(t),
 
 void TargetScan()
 {
-	TFile* f0 = new TFile("analysis_v2.18-calibG2/run91LOR.root", "read");
+	TFile* f0 = new TFile("analysis_v3.2-calibG2/run91LOR.root", "read");
 // 	TFile* f0 = new TFile("analysis_v2.18-calibG2/run110LOR.root", "read");
-	TFile* f1 = new TFile("analysis_v2.18-calibG2/run110LOR.root", "read");
+	TFile* f1 = new TFile("analysis_v3.2-calibG2/run110LOR.root", "read");
 	
 // 	TFile* f0 = new TFile("analysis_v2.18-calibG2/run98LOR.root", "read");
 // 	TFile* f1 = new TFile("analysis_v2.18-calibG2/run99LOR.root", "read");
@@ -121,8 +142,8 @@ void TargetScan()
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 3458", kBlue);
 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 3458", kRed);
 	*/
-	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 10000", kBlue);
-	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 10000", kRed);
+	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 60000", kBlue);
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 60000", kRed);
 
 // 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 60000", kRed);
 	
@@ -183,9 +204,13 @@ void TargetScan()
 		hZmar->Draw();
 		hKeys->Scale(hZmar->GetMaximum()/hKeys->GetMaximum());
 		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.25);
-		hKeys->GetXaxis()->SetRangeUser(-50, 50);
+		hKeys->GetXaxis()->SetRangeUser(-90, 90);
 		hKeys->Draw("same");
-		vec[i]->m_hKeys = hKeys;
+		TF1* hFit = FitKeysSideBand(hKeys, hKeys->GetName(), -90,-40,20,90);
+		hFit->Draw("same");
+		TH1F* hKeys_woBkg = Subtract(hKeys, hFit);
+		vec[i]->m_hKeys = hKeys;			
+		//vec[i]->m_hKeys = hKeys_woBkg;	
 	}
 	
 	TCanvas* c4 = new TCanvas("c4", "c4");

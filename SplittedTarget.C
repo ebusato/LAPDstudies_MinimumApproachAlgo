@@ -31,7 +31,8 @@ void SplittedTarget(TTree* t, TCut cut, int color)
 
 void SplittedTarget()
 {	
-	TFile* f = new TFile("analysis_v2.18-calibG2/run112LOR_80kevts.root", "read");
+  //TFile* f = new TFile("analysis_v2.18-calibG2/run112LOR_80kevts.root", "read");
+  TFile* f = new TFile("analysis_v3.2-calibG2/run112LOR_80kevts.root", "read");
 	TTree* t = (TTree*) f->Get("tree");
 	
 	TCanvas* c0 = new TCanvas("c0", "c0");

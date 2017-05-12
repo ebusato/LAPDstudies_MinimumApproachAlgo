@@ -102,6 +102,7 @@ void Na22Scan()
 	gStyle->SetPadGridY(1);
 	double xmin = -50;
 	double xmax = 50;
+	/*
 	std::pair<TH1F*, TH1F*> h1 = GetZDistr("analysis_v2.18-calibG2/run98LOR.root", "h1", kBlack, xmin, xmax);
 	std::pair<TH1F*, TH1F*> h2 = GetZDistr("analysis_v2.18-calibG2/run99LOR.root", "h2", kRed, xmin, xmax);
 	std::pair<TH1F*, TH1F*> h3 = GetZDistr("analysis_v2.18-calibG2/run100LOR.root", "h3", kBlue, xmin, xmax);
@@ -110,6 +111,15 @@ void Na22Scan()
 	std::pair<TH1F*, TH1F*> h6 = GetZDistr("analysis_v2.18-calibG2/run103LOR.root", "h6", kOrange, xmin, xmax);
 	std::pair<TH1F*, TH1F*> h7 = GetZDistr("analysis_v2.18-calibG2/run104LOR.root", "h7", kMagenta, xmin, xmax);
 	std::pair<TH1F*, TH1F*> h8 = GetZDistr("analysis_v2.18-calibG2/run105LOR.root", "h8", kBlue+2, xmin, xmax);
+	*/
+	std::pair<TH1F*, TH1F*> h1 = GetZDistr("analysis_v3.2-calibG2/run98LOR.root", "h1", kBlack, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h2 = GetZDistr("analysis_v3.2-calibG2/run99LOR.root", "h2", kRed, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h3 = GetZDistr("analysis_v3.2-calibG2/run100LOR.root", "h3", kBlue, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h4 = GetZDistr("analysis_v3.2-calibG2/run101LOR.root", "h4", kGreen+3, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h5 = GetZDistr("analysis_v3.2-calibG2/run102LOR.root", "h5", kYellow, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h6 = GetZDistr("analysis_v3.2-calibG2/run103LOR.root", "h6", kOrange, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h7 = GetZDistr("analysis_v3.2-calibG2/run104LOR.root", "h7", kMagenta, xmin, xmax);
+	std::pair<TH1F*, TH1F*> h8 = GetZDistr("analysis_v3.2-calibG2/run105LOR.root", "h8", kBlue+2, xmin, xmax);
 	
 	TCanvas* c0 = new TCanvas("c0", "c0");
 	c0->Divide(4,2);
