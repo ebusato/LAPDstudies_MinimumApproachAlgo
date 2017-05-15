@@ -131,7 +131,8 @@ void TargetScan()
 {
 	TFile* f0 = new TFile("analysis_v3.2-calibG2/run91LOR.root", "read");
 // 	TFile* f0 = new TFile("analysis_v2.18-calibG2/run110LOR.root", "read");
-	TFile* f1 = new TFile("analysis_v3.2-calibG2/run110LOR.root", "read");
+// 	TFile* f1 = new TFile("analysis_v3.2-calibG2/run110LOR.root", "read");
+	TFile* f1 = new TFile("analysis_v3.3-calibZ1/run118LOR.root", "read");
 	
 // 	TFile* f0 = new TFile("analysis_v2.18-calibG2/run98LOR.root", "read");
 // 	TFile* f1 = new TFile("analysis_v2.18-calibG2/run99LOR.root", "read");
@@ -143,7 +144,7 @@ void TargetScan()
 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 3458", kRed);
 	*/
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 60000", kBlue);
-	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 60000", kRed);
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 3400 && Evt < 60000", kRed);
 
 // 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 60000", kRed);
 	
