@@ -136,6 +136,8 @@ void TargetScan()
 // 	TFile* f1 = new TFile("analysis_v3.2-calibG2/run110LOR.root", "read");
 	TFile* f1 = new TFile("analysis_v3.3-calibK1/run118LOR.root", "read"); // z = 14 cm
 	TFile* f2 = new TFile("analysis_v3.3-calibK1/run136LOR.root", "read"); // z = 14.5 cm
+	TFile* f3 = new TFile("analysis_v3.3-calibK1/run140LOR.root", "read"); // z = 15 cm
+	TFile* f4 = new TFile("analysis_v3.3-calibK1/run143LOR.root", "read"); // z = 15.5 cm
 	
 // 	TFile* f0 = new TFile("analysis_v2.18-calibG2/run98LOR.root", "read");
 // 	TFile* f1 = new TFile("analysis_v2.18-calibG2/run99LOR.root", "read");
@@ -143,15 +145,19 @@ void TargetScan()
 	TTree* t0 = (TTree*) f0->Get("tree");
 	TTree* t1 = (TTree*) f1->Get("tree");
 	TTree* t2 = (TTree*) f2->Get("tree");
+	TTree* t3 = (TTree*) f3->Get("tree");
+	TTree* t4 = (TTree*) f4->Get("tree");
 	
 	/*
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 3458", kBlue);
 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 3458", kRed);
 	*/
-	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2500 && Evt < 49500", "E[LORIdx1] > 400 && E[LORIdx1] < 650 && E[LORIdx2] > 400 && E[LORIdx2] < 650", kRed);
+	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2500 && Evt < 40000", "E[LORIdx1] > 400 && E[LORIdx1] < 650 && E[LORIdx2] > 400 && E[LORIdx2] < 650", kRed);
 	// run118 has for an unknown reason a downward gain drift (511 keV peak at around 400 keV, hence the fancy energy cuts below
-	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 3500 && Evt < 49500", "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kGreen+2); 
-	TreeAnalysis* tAna_2 = new TreeAnalysis(t2, "Evt > 1500 && Evt < 49500", "E[LORIdx1] > 400 && E[LORIdx1] < 700 && E[LORIdx2] > 400 && E[LORIdx2] < 700", kBlue);
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 3500 && Evt < 40000", "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kGreen+2); 
+	TreeAnalysis* tAna_2 = new TreeAnalysis(t2, "Evt > 1500 && Evt < 40000", "E[LORIdx1] > 400 && E[LORIdx1] < 700 && E[LORIdx2] > 400 && E[LORIdx2] < 700", kBlue);
+	TreeAnalysis* tAna_3 = new TreeAnalysis(t3, "Evt > 1000 && Evt < 40000", "E[LORIdx1] > 400 && E[LORIdx1] < 700 && E[LORIdx2] > 400 && E[LORIdx2] < 700", kMagenta);
+	TreeAnalysis* tAna_4 = new TreeAnalysis(t4, "Evt > 1000 && Evt < 40000", "E[LORIdx1] > 380 && E[LORIdx1] < 700 && E[LORIdx2] > 380 && E[LORIdx2] < 700", kBlack);
 
 // 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 60000", kRed);
 	
@@ -159,8 +165,10 @@ void TargetScan()
 	vec.push_back(tAna_0);
 	vec.push_back(tAna_1);
 	vec.push_back(tAna_2);
+	vec.push_back(tAna_3);
+	vec.push_back(tAna_4);
 	
-	TCanvas* c0 = new TCanvas("c0", "c0");
+	TCanvas* c0 = new TCanvas("c0", "c0", 1500, 500);
 	c0->Divide(vec.size(), 2);
 	for(int i=0; i<vec.size(); i++) {
 		c0->cd(i+1);
@@ -169,7 +177,7 @@ void TargetScan()
 		vec[i]->m_tree->Draw("RateLvsL3 : Evt", vec[i]->m_cutEvents);
 	}
 	
-	TCanvas* c1 = new TCanvas("c1", "c1");
+	TCanvas* c1 = new TCanvas("c1", "c1", 1500, 500);
 	c1->Divide(vec.size(),1);
 	for(int i=0; i<vec.size(); i++) {
 		c1->cd(i+1);
@@ -186,7 +194,7 @@ void TargetScan()
 		hArnaud->Draw("colz");
 	}
 	
-	TCanvas* c2 = new TCanvas("c2", "c2");
+	TCanvas* c2 = new TCanvas("c2", "c2", 1500, 500);
 	c2->Divide(vec.size(),1);
 	for(int i=0; i<vec.size(); i++) {
 		c2->cd(i+1);
@@ -203,7 +211,7 @@ vec[i]->m_color, 1);
 		hE->Draw("");
 	}
 	
-	TCanvas* c3 = new TCanvas("c3", "c3");
+	TCanvas* c3 = new TCanvas("c3", "c3", 1500, 500);
 	c3->Divide(vec.size(),1);
 	for(int i=0; i<vec.size(); i++) {
 		c3->cd(i+1);
@@ -211,7 +219,8 @@ vec[i]->m_color, 1);
 		hName+=i;
 		TH1F* hZmar = Draw(vec[i]->m_tree, "LORZmar", vec[i]->m_cutEnergy && vec[i]->m_cutLOR && vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 2000, -100, 
 100, vec[i]->m_color, 3);
-		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 2.4);
+// 		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 2.4);
+		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 2.2);
 		hZmar->Scale(1/hZmar->Integral());
 		hZmar->Draw();
 		hKeys->Scale(hZmar->GetMaximum()/hKeys->GetMaximum());
@@ -225,7 +234,7 @@ vec[i]->m_color, 1);
 		//vec[i]->m_hKeys = hKeys_woBkg;	
 	}
 	
-	TCanvas* c4 = new TCanvas("c4", "c4");
+	TCanvas* c4 = new TCanvas("c4", "c4", 800, 500);
 	gPad->SetGridx(1);
 	gPad->SetGridy(1);
 	double max0 = Maximum(vec[0]->m_hKeys);
