@@ -105,20 +105,22 @@ HalfMaxCoords* FindHalfMaxCoords(TH1F* h)
 
 class TreeAnalysis {
 public:
-	TreeAnalysis(TTree* t, TCut cut, int color);
+	TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color);
 	TTree* m_tree;
 	TCut m_cutTimes;
 	TCut m_cutLOR;
 	TCut m_cutBeamPause;
 	TCut m_cutEvents;
+	TCut m_cutEnergy;
 	int m_color;	
 	
 	TH1F* m_hKeys;
 	HalfMaxCoords* m_coords;
 };
 
-TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, int color) : m_tree(t),
+TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color) : m_tree(t),
 							    m_cutEvents(cutEvents),
+							    m_cutEnergy(cutEnergy),
 							    m_color(color)
 {
 	m_cutTimes = "T30[LORIdx1] > 20 && T30[LORIdx1] < 50 && T30[LORIdx2] > 20 && T30[LORIdx2] < 50";
@@ -129,28 +131,34 @@ TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, int color) : m_tree(t),
 
 void TargetScan()
 {
-	TFile* f0 = new TFile("analysis_v3.2-calibG2/run91LOR.root", "read");
-// 	TFile* f0 = new TFile("analysis_v2.18-calibG2/run110LOR.root", "read");
+// 	TFile* f0 = new TFile("analysis_v3.2-calibG2/run91LOR.root", "read");
+	TFile* f0 = new TFile("analysis_v3.2-calibG2/run110LOR.root", "read"); // z = 13.5 cm
 // 	TFile* f1 = new TFile("analysis_v3.2-calibG2/run110LOR.root", "read");
-	TFile* f1 = new TFile("analysis_v3.3-calibZ1/run118LOR.root", "read");
+	TFile* f1 = new TFile("analysis_v3.3-calibK1/run118LOR.root", "read"); // z = 14 cm
+	TFile* f2 = new TFile("analysis_v3.3-calibK1/run136LOR.root", "read"); // z = 14.5 cm
 	
 // 	TFile* f0 = new TFile("analysis_v2.18-calibG2/run98LOR.root", "read");
 // 	TFile* f1 = new TFile("analysis_v2.18-calibG2/run99LOR.root", "read");
 	
 	TTree* t0 = (TTree*) f0->Get("tree");
 	TTree* t1 = (TTree*) f1->Get("tree");
+	TTree* t2 = (TTree*) f2->Get("tree");
+	
 	/*
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 3458", kBlue);
 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 2000 && Evt < 3458", kRed);
 	*/
-	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2000 && Evt < 60000", kBlue);
-	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 3400 && Evt < 60000", kRed);
+	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, "Evt > 2500 && Evt < 49500", "E[LORIdx1] > 400 && E[LORIdx1] < 650 && E[LORIdx2] > 400 && E[LORIdx2] < 650", kRed);
+	// run118 has for an unknown reason a downward gain drift (511 keV peak at around 400 keV, hence the fancy energy cuts below
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 3500 && Evt < 49500", "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kGreen+2); 
+	TreeAnalysis* tAna_2 = new TreeAnalysis(t2, "Evt > 1500 && Evt < 49500", "E[LORIdx1] > 400 && E[LORIdx1] < 700 && E[LORIdx2] > 400 && E[LORIdx2] < 700", kBlue);
 
 // 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, "Evt > 60000", kRed);
 	
 	std::vector<TreeAnalysis*> vec;
 	vec.push_back(tAna_0);
 	vec.push_back(tAna_1);
+	vec.push_back(tAna_2);
 	
 	TCanvas* c0 = new TCanvas("c0", "c0");
 	c0->Divide(vec.size(), 2);
@@ -186,8 +194,10 @@ void TargetScan()
 		hNameTemp+=i;
 		TString hName("hE");
 		hName+=i;
-		TH1F* hETemp = Draw(vec[i]->m_tree, "E[LORIdx1]", vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hNameTemp.Data(), 100, 0, 1000, vec[i]->m_color, 1);
-		TH1F* hE = Draw(vec[i]->m_tree, "E[LORIdx2]", vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 100, 0, 1000, vec[i]->m_color, 1);
+		TH1F* hETemp = Draw(vec[i]->m_tree, "E[LORIdx1]", vec[i]->m_cutEnergy && vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hNameTemp.Data(), 100, 0, 1000, 
+vec[i]->m_color, 1);
+		TH1F* hE = Draw(vec[i]->m_tree, "E[LORIdx2]", vec[i]->m_cutEnergy && vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 100, 0, 1000, vec[i]->m_color, 
+1);
 		hE->Add(hETemp);
 		cout << "name = " << hE->GetName() << " " << hE->GetEntries() << endl;
 		hE->Draw("");
@@ -199,8 +209,9 @@ void TargetScan()
 		c3->cd(i+1);
 		TString hName("hZmar");
 		hName+=i;
-		TH1F* hZmar = Draw(vec[i]->m_tree, "LORZmar", vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 2000, -100, 100, vec[i]->m_color, 3);
-		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 2);
+		TH1F* hZmar = Draw(vec[i]->m_tree, "LORZmar", vec[i]->m_cutEnergy && vec[i]->m_cutLOR && vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 2000, -100, 
+100, vec[i]->m_color, 3);
+		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 2.4);
 		hZmar->Scale(1/hZmar->Integral());
 		hZmar->Draw();
 		hKeys->Scale(hZmar->GetMaximum()/hKeys->GetMaximum());
@@ -243,7 +254,7 @@ void TargetScan()
 			TLatex l;
 			l.SetTextColor(kBlack);
 			l.SetTextSize(0.05);
-			l.DrawLatex((vec[i]->m_coords->m_Xhigh + vec[i-1]->m_coords->m_Xhigh)/2.+5, max0/2.+0., Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_Xhigh - 
+			l.DrawLatex((vec[i]->m_coords->m_Xhigh + vec[i-1]->m_coords->m_Xhigh)/2.+7, max0/2.+0.02-i*0.009, Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_Xhigh - 
 vec[i-1]->m_coords->m_Xhigh)));
 		}
 	}
