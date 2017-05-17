@@ -1,135 +1,5 @@
 #include "Utils.C"
 
-TF1* FitKeysSideBand(TH1F* h, string histName, double Lmin, double Lmax, double Rmin, double Rmax)
-{
-  RooRealVar* Z = new RooRealVar("Z", "Z", -70, 70, "mm");
-  Z->setRange("R1",Lmin,Lmax);
-  Z->setRange("R2",Rmin,Rmax);
-  //Z->setRange("R1",-30,0);
-  RooRealVar* mean = new RooRealVar("mean", "mean", -5);
-  RooRealVar* sigma = new RooRealVar("sigma", "width", 45);
-
-  RooGaussian* gaussian = new RooGaussian("gaussian", "gaussian", *Z, *mean, *sigma);
-
-  RooDataHist* dh = new RooDataHist(histName.c_str(), histName.c_str(), *Z, Import(*h));
-
-  gaussian->fitTo(*dh, Extended(),Range("R1", "R2"), SumW2Error(kTRUE));
-
-  TF1* gaussianTF = gaussian->asTF(RooArgList(*Z), RooArgList(*mean,*sigma), RooArgSet(*Z));
-
-  return gaussianTF;
-}
-
-TH1F* Subtract(TH1F* h, TF1* f) 
-{
-  TString name(h->GetName());
-  name+="_clone";
-  TH1F* h1 = (TH1F*) h->Clone(name);
-  h1->Reset();
-  h1->Sumw2();
-  for(int i=0; i<h->GetNbinsX(); i++)
-    {
-      double content = h->GetBinContent(i);
-      double val = h->GetBinCenter(i);
-      double funcval = f->Eval(val);
-      //cout << i << "  " << val << "  " << content << "  " << funcval<< endl;
-      h1->SetBinContent(i, content-funcval);
-      //h1->Set
-    }
-  return h1;
-}
-
-TH1F* Draw(TTree* t, TString var, TCut cut, TString hName, int Nbins, double xmin, double xmax, int color, int linesize)
-{
-	TH1F* h = new TH1F(hName.Data(), hName.Data(), Nbins, xmin, xmax);
-	TString temp(var);
-	temp+=">>";
-	temp+=hName;
-	t->Draw(temp.Data(), cut);
-	h->SetLineColor(color);
-	h->SetMarkerColor(color);
-	h->SetLineWidth(linesize);
-	return h;
-}
-
-  //RooDataSet* data = new RooDataSet("data","data",RooArgSet(x));
-  //x=4;
-  //data->add(RooArgSet(x));
-
-
-class HalfMaxCoords {
-public:
-	void Print();
-	
-	double m_Xlow;
-	double m_Xhigh;
-	double m_Ylow;
-	double m_Yhigh;
-};
- 
-void HalfMaxCoords::Print()
-{
-	cout << "m_Xlow = " << m_Xlow << endl;
-	cout << "m_Xhigh = " << m_Xhigh << endl;
-	cout << "m_Ylow = " << m_Ylow << endl;
-	cout << "m_Yhigh = " << m_Yhigh << endl;
-}
-
-double Maximum(TH1F* h)
-{
-	double max = -1;
-	for(int i=0; i<h->GetNbinsX(); i++)
-	{
-		if(h->GetBinContent(i) > max) {
-			max = h->GetBinContent(i);
-		}
-	}
-	return max;
-}
-
-HalfMaxCoords* FindHalfMaxCoords(TH1F* h)
-{
-   double max = Maximum(h);
-   int bin1 = h->FindFirstBinAbove(max/2.);
-   int bin2 = h->FindLastBinAbove(max/2.);
-   // 0.018 is the background estimated by eye !
-   //int bin1 = h->FindFirstBinAbove((max-0.018)/2.+0.018);
-   //int bin2 = h->FindLastBinAbove((max-0.018)/2.+0.018);
-   HalfMaxCoords* coords = new HalfMaxCoords();
-   coords->m_Xlow = h->GetBinCenter(bin1);
-   coords->m_Xhigh = h->GetBinCenter(bin2);
-   coords->m_Ylow = h->GetBinContent(bin1);
-   coords->m_Yhigh = h->GetBinContent(bin2);
-   return coords;
-}
-
-class TreeAnalysis {
-public:
-	// zTargetSupport is in mm
-	TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color, double zTargetSupport);
-	TTree* m_tree;
-	TCut m_cutTimes;
-	TCut m_cutLOR;
-	TCut m_cutBeamPause;
-	TCut m_cutEvents;
-	TCut m_cutEnergy;
-	int m_color;	
-	double m_zTargetSupport;
-	
-	TH1F* m_hKeys;
-	HalfMaxCoords* m_coords;
-};
-
-TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color, double zTargetSupport) : m_tree(t),
-							    m_cutEvents(cutEvents),
-							    m_cutEnergy(cutEnergy),
-							    m_color(color),
-							    m_zTargetSupport(zTargetSupport)
-{
-	m_cutTimes = "T30[LORIdx1] > 20 && T30[LORIdx1] < 50 && T30[LORIdx2] > 20 && T30[LORIdx2] < 50";
-	m_cutLOR = "NoLORs == 1 && LORRmar < 25";
-	m_cutBeamPause = "abs(LORTMean - LORTRF - 7) > 5";
-}
 
 
 void TargetScan()
@@ -265,9 +135,11 @@ vec[i]->m_color, 1);
 			vec[i]->m_hKeys->Draw();
 			TLine* line = new TLine(vec[i]->m_coords->m_Xhigh, max0/2., vec[i]->m_coords->m_Xhigh, yStart);
 			line->SetLineStyle(kDashed);
+			line->SetLineColor(12);
 			line->Draw();
 			TEllipse* ell = new TEllipse(vec[i]->m_coords->m_Xhigh, max0/2., 1.5, 0.005);
 			ell->SetFillStyle(0);
+			ell->SetLineColor(12);
 			ell->Draw();
 		} else {
 			vec[i]->m_hKeys->Scale(max0/max);
@@ -285,22 +157,24 @@ vec[i]->m_color, 1);
 			
 			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, locY, vec[i-1]->m_coords->m_Xhigh, locY, 0.015, "<->");
 // 			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, vec[i]->m_coords->m_Yhigh, vec[i-1]->m_coords->m_Xhigh, vec[i-1]->m_coords->m_Yhigh, 0.015, "<|-|>");
-			arr->SetLineColor(kBlack);
-			arr->SetFillColor(kBlack);
+			arr->SetLineColor(12);
+			arr->SetFillColor(12);
 			arr->SetAngle(120);
 			arr->SetArrowSize(0.007);
 			arr->Draw();
 			TLatex l;
-			l.SetTextColor(kBlack);
+			l.SetTextColor(12);
 			l.SetTextSize(0.045);
 // 			l.DrawLatex((vec[i]->m_coords->m_Xhigh + vec[i-1]->m_coords->m_Xhigh)/2.+7, max0/2.+0.02-i*0.009, Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_Xhigh - 
 //vec[i-1]->m_coords->m_Xhigh)));
 			l.DrawLatex(vec[i-1]->m_coords->m_Xhigh+1.4, locY+0.007, Form("%.1f", (vec[i]->m_coords->m_Xhigh-vec[i-1]->m_coords->m_Xhigh)));
 			TLine* line = new TLine(vec[i]->m_coords->m_Xhigh, max0/2., vec[i]->m_coords->m_Xhigh, locY);
 			line->SetLineStyle(kDashed);
+			line->SetLineColor(12);
 			line->Draw();
 			TEllipse* ell = new TEllipse(vec[i]->m_coords->m_Xhigh, max0/2., 1.5, 0.005);
 			ell->SetFillStyle(0);
+			ell->SetLineColor(12);
 			ell->Draw();
 		}
 	}
