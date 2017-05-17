@@ -4,7 +4,7 @@ void TargetWithHole()
 {
 	TFile* f0 = new TFile("analysis_v3.2-calibG2/run91LOR.root", "read"); // z = 14 cm
 // 	TFile* f0 = new TFile("analysis_v3.3-calibK1/run118LOR.root", "read"); // z = 14 cm
-	TFile* f1 = new TFile("analysis_v3.3-calibK1/run118LOR.root", "read"); // z = 14 cm
+	TFile* f1 = new TFile("analysis_v3.3-calibK1/run158LOR.root", "read"); // z = 14 cm
 	
 	TTree* t0 = (TTree*) f0->Get("tree");
 	TTree* t1 = (TTree*) f1->Get("tree");
@@ -12,8 +12,8 @@ void TargetWithHole()
 	int evtMax = 40000;
 	// run118 has for an unknown reason a downward gain drift (511 keV peak at around 400 keV, hence the fancy energy cuts below
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, Form("Evt > 3500 && Evt < %d", evtMax), "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kRed, 140);
-	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, Form("Evt > 3500 && Evt < %d", evtMax), "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kGreen+2, 140);  
-// 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, Form("Evt > 1200 && Evt < %d", evtMax), "E[LORIdx1] > 0 && E[LORIdx1] < 1000 && E[LORIdx2] > 0 && E[LORIdx2] < 1000", kGreen+2, 140);
+// 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, Form("Evt > 3500 && Evt < %d", evtMax), "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kGreen+2, 140);  
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, Form("Evt > 1200 && Evt < %d", evtMax), "E[LORIdx1] > 0 && E[LORIdx1] < 1000 && E[LORIdx2] > 0 && E[LORIdx2] < 1000", kGreen+2, 140);
 	
 	std::vector<TreeAnalysis*> vec;
 	vec.push_back(tAna_0);

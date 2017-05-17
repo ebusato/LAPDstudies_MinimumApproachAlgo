@@ -177,4 +177,5 @@ TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color, 
 	m_cutTimes = "T30[LORIdx1] > 20 && T30[LORIdx1] < 50 && T30[LORIdx2] > 20 && T30[LORIdx2] < 50";
 	m_cutLOR = "NoLORs == 1 && LORRmar < 25";
 	m_cutBeamPause = "abs(LORTMean - LORTRF - 7) > 5";
+// 	m_cutBeamPause = "";
 }
