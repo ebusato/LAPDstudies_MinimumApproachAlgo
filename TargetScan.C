@@ -6,7 +6,8 @@ void TargetScan()
 {
 	TFile* f0 = new TFile("analysis_v3.2-calibG2/run110LOR.root", "read"); // z = 13.5 cm
 // 	TFile* f1 = new TFile("analysis_v3.2-calibG2/run91LOR.root", "read"); // z = 14 cm
-	TFile* f1 = new TFile("analysis_v3.3-calibK1/run118LOR.root", "read"); // z = 14 cm
+	TFile* f1 = new TFile("analysis_v3.3-calibK1/run118LOR.root", "read"); // z = 14 cm // <- default
+// 	TFile* f1 = new TFile("analysis_v3.3-calibK1/run166LOR.root", "read"); 
 	TFile* f2 = new TFile("analysis_v3.3-calibK1/run136LOR.root", "read"); // z = 14.5 cm
 	TFile* f3 = new TFile("analysis_v3.3-calibK1/run140LOR.root", "read"); // z = 15 cm
 	TFile* f4 = new TFile("analysis_v3.3-calibK1/run143LOR.root", "read"); // z = 15.5 cm
@@ -15,6 +16,7 @@ void TargetScan()
 	TFile* f7 = new TFile("analysis_v3.3-calibK1/run151LOR.root", "read"); // z = 18.5 cm
 	TFile* f8 = new TFile("analysis_v3.3-calibK1/run153LOR.root", "read"); // z = 19.5 cm
 	TFile* f9 = new TFile("analysis_v3.3-calibK1/run156LOR.root", "read"); // z = 20.5 cm
+	TFile* f10 = new TFile("analysis_v3.3-calibK1/run170LOR.root", "read"); // z = 22.5 cm
 	
 	TTree* t0 = (TTree*) f0->Get("tree");
 	TTree* t1 = (TTree*) f1->Get("tree");
@@ -26,19 +28,22 @@ void TargetScan()
 	TTree* t7 = (TTree*) f7->Get("tree");
 	TTree* t8 = (TTree*) f8->Get("tree");
 	TTree* t9 = (TTree*) f9->Get("tree");
+	TTree* t10 = (TTree*) f10->Get("tree");
 	
 	int evtMax = 40000;
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, Form("Evt > 2500 && Evt < %d", evtMax), "E[LORIdx1] > 400 && E[LORIdx1] < 650 && E[LORIdx2] > 400 && E[LORIdx2] < 650", kRed, 135);
 	// run118 has for an unknown reason a downward gain drift (511 keV peak at around 400 keV, hence the fancy energy cuts below
-	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, Form("Evt > 3500 && Evt < %d", evtMax), "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kGreen+2, 140); 
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, Form("Evt > 3500 && Evt < %d", evtMax), "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kGreen+2, 140); //<-default
+// 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, Form("Evt > 900 && Evt < %d", evtMax), "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kGreen+2, 140);
 	TreeAnalysis* tAna_2 = new TreeAnalysis(t2, Form("Evt > 1500 && Evt < %d", evtMax), "E[LORIdx1] > 400 && E[LORIdx1] < 700 && E[LORIdx2] > 400 && E[LORIdx2] < 700", kBlue, 145);
 	TreeAnalysis* tAna_3 = new TreeAnalysis(t3, Form("Evt > 1000 && Evt < %d", evtMax), "E[LORIdx1] > 400 && E[LORIdx1] < 700 && E[LORIdx2] > 400 && E[LORIdx2] < 700", kMagenta, 150);
-	TreeAnalysis* tAna_4 = new TreeAnalysis(t4, Form("Evt > 1000 && Evt < %d", evtMax), "E[LORIdx1] > 380 && E[LORIdx1] < 700 && E[LORIdx2] > 380 && E[LORIdx2] < 700", kYellow, 155);
+	TreeAnalysis* tAna_4 = new TreeAnalysis(t4, Form("Evt > 1000 && Evt < %d", evtMax), "E[LORIdx1] > 380 && E[LORIdx1] < 700 && E[LORIdx2] > 380 && E[LORIdx2] < 700", kYellow+1, 155);
 	TreeAnalysis* tAna_5 = new TreeAnalysis(t5, Form("Evt > 2600 && Evt < %d", evtMax), "E[LORIdx1] > 450 && E[LORIdx1] < 700 && E[LORIdx2] > 450 && E[LORIdx2] < 700", kOrange, 165);
 	TreeAnalysis* tAna_6 = new TreeAnalysis(t6, Form("Evt > 2000 && Evt < %d", evtMax), "E[LORIdx1] > 450 && E[LORIdx1] < 700 && E[LORIdx2] > 450 && E[LORIdx2] < 700", kBlack, 175);
 	TreeAnalysis* tAna_7 = new TreeAnalysis(t7, Form("Evt > 600 && Evt < %d", evtMax), "E[LORIdx1] > 450 && E[LORIdx1] < 700 && E[LORIdx2] > 450 && E[LORIdx2] < 700", kRed+1, 185);
 	TreeAnalysis* tAna_8 = new TreeAnalysis(t8, Form("Evt > 1000 && Evt < %d", evtMax), "E[LORIdx1] > 420 && E[LORIdx1] < 700 && E[LORIdx2] > 420 && E[LORIdx2] < 700", kGreen+3, 195);
 	TreeAnalysis* tAna_9 = new TreeAnalysis(t9, Form("Evt > 1000 && Evt < %d", evtMax), "E[LORIdx1] > 350 && E[LORIdx1] < 700 && E[LORIdx2] > 350 && E[LORIdx2] < 700", kBlue+1, 205);
+	TreeAnalysis* tAna_10 = new TreeAnalysis(t10, Form("Evt > 3800 && Evt < %d", evtMax), "E[LORIdx1] > 0 && E[LORIdx1] < 1000 && E[LORIdx2] > 0 && E[LORIdx2] < 1000", kMagenta+1, 225);
 	
 	std::vector<TreeAnalysis*> vec;
 	vec.push_back(tAna_0);
@@ -51,6 +56,7 @@ void TargetScan()
 	vec.push_back(tAna_7);
 	vec.push_back(tAna_8);
 	vec.push_back(tAna_9);
+// 	vec.push_back(tAna_10);
 	
 	TCanvas* c0 = new TCanvas("c0", "c0", 1800, 300);
 	c0->Divide(vec.size(), 2);
@@ -109,10 +115,10 @@ vec[i]->m_color, 1);
 		hZmar->Draw();
 		hKeys->Scale(hZmar->GetMaximum()/hKeys->GetMaximum());
 // 		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.25);
-		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.8);
-		hKeys->GetXaxis()->SetRangeUser(-40, 80);
+		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.95);
+		hKeys->GetXaxis()->SetRangeUser(-70, 90);
 		hKeys->Draw("same");
-		TF1* hFit = FitKeysSideBand(hKeys, hKeys->GetName(), -90,-40,20,90);
+		TF1* hFit = FitKeysSideBand(hKeys, hKeys->GetName(), -90,-50,20,90);
 		hFit->Draw("same");
 		TH1F* hKeys_woBkg = Subtract(hKeys, hFit);
 		vec[i]->m_hKeys = hKeys;			
@@ -120,8 +126,8 @@ vec[i]->m_color, 1);
 	}
 	
 	TCanvas* c4 = new TCanvas("c4", "c4", 800, 500);
-	gPad->SetGridx(1);
-	gPad->SetGridy(1);
+// 	gPad->SetGridx(1);
+// 	gPad->SetGridy(1);
 	double max0 = Maximum(vec[0]->m_hKeys);
 	HalfMaxCoords* coords0 = FindHalfMaxCoords(vec[0]->m_hKeys);
 	vec[0]->m_coords = coords0;
@@ -133,14 +139,6 @@ vec[i]->m_color, 1);
 		double max = Maximum(vec[i]->m_hKeys);
 		if(i == 0) {
 			vec[i]->m_hKeys->Draw();
-			TLine* line = new TLine(vec[i]->m_coords->m_Xhigh, max0/2., vec[i]->m_coords->m_Xhigh, yStart);
-			line->SetLineStyle(kDashed);
-			line->SetLineColor(12);
-			line->Draw();
-			TEllipse* ell = new TEllipse(vec[i]->m_coords->m_Xhigh, max0/2., 1.5, 0.005);
-			ell->SetFillStyle(0);
-			ell->SetLineColor(12);
-			ell->Draw();
 		} else {
 			vec[i]->m_hKeys->Scale(max0/max);
 			vec[i]->m_hKeys->Draw("same");
@@ -149,12 +147,27 @@ vec[i]->m_color, 1);
 			coords->Print();
 			vec[i]->m_coords = coords;
 			cout << "maximum = " << Maximum(vec[i]->m_hKeys) << endl;
-			
-			double locY = yStart - i*yShift;
-			if(i >= 5) {
-				locY = yStart - 5*yShift;
-			}
-			
+		}
+	}
+	for(int i=0; i<vec.size(); i++) {
+		double locY = yStart - i*yShift;
+		if(i==0) {
+			locY = yStart - yShift;
+		}
+		if(i >= 5) {
+			locY = yStart - 5*yShift;
+		}
+		
+		TLine* line = new TLine(vec[i]->m_coords->m_Xhigh, max0/2., vec[i]->m_coords->m_Xhigh, locY);
+		line->SetLineStyle(kDashed);
+		line->SetLineColor(12);
+		line->Draw();
+		TEllipse* ell = new TEllipse(vec[i]->m_coords->m_Xhigh, max0/2., 1, 0.002);
+		ell->SetFillStyle(1);
+		ell->SetLineColor(12);
+		ell->SetFillColor(12);
+		ell->Draw();
+		if(i>=1) {
 			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, locY, vec[i-1]->m_coords->m_Xhigh, locY, 0.015, "<->");
 // 			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, vec[i]->m_coords->m_Yhigh, vec[i-1]->m_coords->m_Xhigh, vec[i-1]->m_coords->m_Yhigh, 0.015, "<|-|>");
 			arr->SetLineColor(12);
@@ -165,23 +178,30 @@ vec[i]->m_color, 1);
 			TLatex l;
 			l.SetTextColor(12);
 			l.SetTextSize(0.045);
-// 			l.DrawLatex((vec[i]->m_coords->m_Xhigh + vec[i-1]->m_coords->m_Xhigh)/2.+7, max0/2.+0.02-i*0.009, Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_Xhigh - 
-//vec[i-1]->m_coords->m_Xhigh)));
+	// 		l.DrawLatex((vec[i]->m_coords->m_Xhigh + vec[i-1]->m_coords->m_Xhigh)/2.+7, max0/2.+0.02-i*0.009, Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_Xhigh - 
+	//vec[i-1]->m_coords->m_Xhigh)));
 			l.DrawLatex(vec[i-1]->m_coords->m_Xhigh+1.4, locY+0.007, Form("%.1f", (vec[i]->m_coords->m_Xhigh-vec[i-1]->m_coords->m_Xhigh)));
-			TLine* line = new TLine(vec[i]->m_coords->m_Xhigh, max0/2., vec[i]->m_coords->m_Xhigh, locY);
-			line->SetLineStyle(kDashed);
-			line->SetLineColor(12);
-			line->Draw();
-			TEllipse* ell = new TEllipse(vec[i]->m_coords->m_Xhigh, max0/2., 1.5, 0.005);
-			ell->SetFillStyle(0);
-			ell->SetLineColor(12);
-			ell->Draw();
 		}
 	}
-	PutText(0.57, 0.81, kBlack, "LAPD");
-	PutText(0.57, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ");
-	PutText(0.57, 0.69, kBlack, "Targets: PMMA 5 #times 5 cm");
 	
+	PutText(0.57, 0.81, kBlack, "LAPD", 0.047);
+	PutText(0.57, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ", 0.047);
+	PutText(0.57, 0.69, kBlack, "Targets: PMMA 5 #times 5 cm", 0.047);
+	
+	TLegend* leg = new TLegend(0.1929825,0.4288747,0.3709273,0.8619958);
+	leg->SetBorderSize(0);
+	leg->AddEntry(vec[0]->m_hKeys, "initial position", "l");
+	leg->AddEntry(vec[1]->m_hKeys, "5 mm shift", "l");
+	leg->AddEntry(vec[2]->m_hKeys, "5 mm shift", "l");
+	leg->AddEntry(vec[3]->m_hKeys, "5 mm shift", "l");
+	leg->AddEntry(vec[4]->m_hKeys, "5 mm shift", "l");
+	leg->AddEntry(vec[5]->m_hKeys, "10 mm shift", "l");
+	leg->AddEntry(vec[6]->m_hKeys, "10 mm shift", "l");
+	leg->AddEntry(vec[7]->m_hKeys, "10 mm shift", "l");
+	leg->AddEntry(vec[8]->m_hKeys, "10 mm shift", "l");
+	leg->AddEntry(vec[9]->m_hKeys, "10 mm shift", "l");
+// 	leg->AddEntry(vec[10]->m_hKeys, "20 mm shift", "l");
+	leg->Draw();
 	c4->SaveAs("TargetScan_c4.png");
 	
 	TCanvas* c5 = new TCanvas("c5", "c5", 800, 500);

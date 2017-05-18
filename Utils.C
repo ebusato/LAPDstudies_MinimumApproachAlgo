@@ -37,8 +37,8 @@ TH1F* MakeKernelPDFFromTH1(TH1F* h, int color, double rho)
   hKeys->GetXaxis()->SetTitle("z_{MAR} [mm]");
   hKeys->GetXaxis()->SetTitleSize(0.06);
   hKeys->GetXaxis()->SetLabelSize(0.055);
-  hKeys->GetXaxis()->SetTitleOffset(1.37);
-  hKeys->SetLineWidth(1);
+  hKeys->GetXaxis()->SetTitleOffset(1.3);
+  hKeys->SetLineWidth(2);
   for(int i=0; i<hKeys->GetNbinsX(); i++) {
 	  hKeys->SetBinError(i, 0);
 // 	cout << "i, Err: " << i << "  " << hKeys->GetXaxis()->GetBinCenter(i) << "  " << hKeys->GetBinError(i) << endl;  
@@ -175,7 +175,7 @@ TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color, 
 							    m_zTargetSupport(zTargetSupport)
 {
 	m_cutTimes = "T30[LORIdx1] > 20 && T30[LORIdx1] < 50 && T30[LORIdx2] > 20 && T30[LORIdx2] < 50";
-	m_cutLOR = "NoLORs == 1 && LORRmar < 25";
+	m_cutLOR = "NoLORs == 1 && LORRmar < 15";
 	m_cutBeamPause = "abs(LORTMean - LORTRF - 7) > 5";
 // 	m_cutBeamPause = "";
 }
