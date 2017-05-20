@@ -168,19 +168,19 @@ vec[i]->m_color, 1);
 		ell->SetFillColor(12);
 		ell->Draw();
 		if(i>=1) {
-			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, locY, vec[i-1]->m_coords->m_Xhigh, locY, 0.015, "<->");
+			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, locY, vec[i-1]->m_coords->m_Xhigh, locY, 0.015, "|-|");
 // 			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, vec[i]->m_coords->m_Yhigh, vec[i-1]->m_coords->m_Xhigh, vec[i-1]->m_coords->m_Yhigh, 0.015, "<|-|>");
 			arr->SetLineColor(12);
 			arr->SetFillColor(12);
-			arr->SetAngle(120);
-			arr->SetArrowSize(0.007);
+// 			arr->SetAngle(180);
+// 			arr->SetArrowSize(0.0001);
 			arr->Draw();
 			TLatex l;
 			l.SetTextColor(12);
 			l.SetTextSize(0.045);
 	// 		l.DrawLatex((vec[i]->m_coords->m_Xhigh + vec[i-1]->m_coords->m_Xhigh)/2.+7, max0/2.+0.02-i*0.009, Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_Xhigh - 
 	//vec[i-1]->m_coords->m_Xhigh)));
-			l.DrawLatex(vec[i-1]->m_coords->m_Xhigh+1.4, locY+0.007, Form("%.1f", (vec[i]->m_coords->m_Xhigh-vec[i-1]->m_coords->m_Xhigh)));
+			l.DrawLatex(vec[i-1]->m_coords->m_Xhigh+(i>0?1:0)*1.4, locY+0.007, Form("%.1f", (vec[i]->m_coords->m_Xhigh-vec[i-1]->m_coords->m_Xhigh)));
 		}
 	}
 	
@@ -213,6 +213,8 @@ vec[i]->m_color, 1);
 		g->SetPoint(i, vec[i]->m_zTargetSupport - vec[0]->m_zTargetSupport, vec[i]->m_coords->m_Xhigh - vec[0]->m_coords->m_Xhigh);
 	}
 	g->SetMarkerSize(1.5);
+	g->GetXaxis()->SetRangeUser(0, 80);
+	g->GetYaxis()->SetRangeUser(0, 72);
 	g->Draw("ap");
 	g->GetXaxis()->SetTitle("z_{ target} - z_{ target}^{0} [mm]");
 	g->GetYaxis()->SetTitle("z_{ fall-off} - z_{ fall-off}^{0} [mm]");
@@ -222,11 +224,24 @@ vec[i]->m_color, 1);
 	g->GetYaxis()->SetTitleOffset(1.1);
 	g->GetXaxis()->SetLabelSize(0.06);
 	g->GetYaxis()->SetLabelSize(0.06);
-	g->GetXaxis()->SetNdivisions(10);
+	g->GetXaxis()->SetNdivisions(512);
 	g->GetYaxis()->SetNdivisions(512);
-	TF1* f = new TF1("f", "x", -20, 100);
-	f->Draw("same");
+// 	TF1* f = new TF1("f", "x", -20, 100);
+// 	f->Draw("same");
 	
+	const Int_t n = 5;
+	double err = 2;
+	Double_t x[n]  = {0, 20, 60, 70, 80};
+	Double_t y[n]  = {0, 20, 60, 70, 80};
+	Double_t ex[n] = {0, 0, 0, 0, 0};
+	Double_t ey[n] = {err, err, err, err, err};
+	gr = new TGraphErrors(n,x,y,ex,ey);	
+	gr->SetFillStyle(3002);
+	gr->SetFillColor(kRed);
+	gr->SetLineColor(kRed);
+	gr->Draw("C3");
+	
+	g->Draw("p");
 	PutText(0.2, 0.81, kBlack, "LAPD");
 	PutText(0.2, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ");
 	PutText(0.2, 0.69, kBlack, "Targets: PMMA 5 #times 5 cm");
