@@ -1,7 +1,5 @@
 #include "Utils.C"
 
-
-
 void TargetScan()
 {
 	TFile* f0 = new TFile("analysis_v3.2-calibG2/run110LOR.root", "read"); // z = 13.5 cm
@@ -30,6 +28,7 @@ void TargetScan()
 	TTree* t9 = (TTree*) f9->Get("tree");
 	TTree* t10 = (TTree*) f10->Get("tree");
 	
+	/*
 	int evtMax = 40000;
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, Form("Evt > 2500 && Evt < %d", evtMax), "E[LORIdx1] > 400 && E[LORIdx1] < 650 && E[LORIdx2] > 400 && E[LORIdx2] < 650", kRed, 135);
 	// run118 has for an unknown reason a downward gain drift (511 keV peak at around 400 keV, hence the fancy energy cuts below
@@ -44,6 +43,23 @@ void TargetScan()
 	TreeAnalysis* tAna_8 = new TreeAnalysis(t8, Form("Evt > 1000 && Evt < %d", evtMax), "E[LORIdx1] > 420 && E[LORIdx1] < 700 && E[LORIdx2] > 420 && E[LORIdx2] < 700", kGreen+3, 195);
 	TreeAnalysis* tAna_9 = new TreeAnalysis(t9, Form("Evt > 1000 && Evt < %d", evtMax), "E[LORIdx1] > 350 && E[LORIdx1] < 700 && E[LORIdx2] > 350 && E[LORIdx2] < 700", kBlue+1, 205);
 	TreeAnalysis* tAna_10 = new TreeAnalysis(t10, Form("Evt > 3800 && Evt < %d", evtMax), "E[LORIdx1] > 0 && E[LORIdx1] < 1000 && E[LORIdx2] > 0 && E[LORIdx2] < 1000", kMagenta+1, 225);
+	*/
+	
+// 	double time = 28.*60.; // time in seconds
+	double time = 10.*60.; // time in seconds
+	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, 2500, time, "E[LORIdx1] > 400 && E[LORIdx1] < 650 && E[LORIdx2] > 400 && E[LORIdx2] < 650", kRed, 135);
+	// run118 has for an unknown reason a downward gain drift (511 keV peak at around 400 keV, hence the fancy energy cuts below
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, 3500, time, "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kGreen+2, 140); //<-default
+// 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, 900, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kGreen+2, 140);
+	TreeAnalysis* tAna_2 = new TreeAnalysis(t2, 1500, time, "E[LORIdx1] > 400 && E[LORIdx1] < 700 && E[LORIdx2] > 400 && E[LORIdx2] < 700", kBlue, 145);
+	TreeAnalysis* tAna_3 = new TreeAnalysis(t3, 1000, time, "E[LORIdx1] > 400 && E[LORIdx1] < 700 && E[LORIdx2] > 400 && E[LORIdx2] < 700", kMagenta, 150);
+	TreeAnalysis* tAna_4 = new TreeAnalysis(t4, 1000, time, "E[LORIdx1] > 380 && E[LORIdx1] < 700 && E[LORIdx2] > 380 && E[LORIdx2] < 700", kYellow+1, 155);
+	TreeAnalysis* tAna_5 = new TreeAnalysis(t5, 2600, time, "E[LORIdx1] > 450 && E[LORIdx1] < 700 && E[LORIdx2] > 450 && E[LORIdx2] < 700", kOrange, 165);
+	TreeAnalysis* tAna_6 = new TreeAnalysis(t6, 2000, time, "E[LORIdx1] > 450 && E[LORIdx1] < 700 && E[LORIdx2] > 450 && E[LORIdx2] < 700", kBlack, 175);
+	TreeAnalysis* tAna_7 = new TreeAnalysis(t7, 600, time, "E[LORIdx1] > 450 && E[LORIdx1] < 700 && E[LORIdx2] > 450 && E[LORIdx2] < 700", kRed+1, 185);
+	TreeAnalysis* tAna_8 = new TreeAnalysis(t8, 1000, time, "E[LORIdx1] > 420 && E[LORIdx1] < 700 && E[LORIdx2] > 420 && E[LORIdx2] < 700", kGreen+3, 195);
+	TreeAnalysis* tAna_9 = new TreeAnalysis(t9, 1000, time, "E[LORIdx1] > 350 && E[LORIdx1] < 700 && E[LORIdx2] > 350 && E[LORIdx2] < 700", kBlue+1, 205);
+	TreeAnalysis* tAna_10 = new TreeAnalysis(t10, 3800, time, "E[LORIdx1] > 0 && E[LORIdx1] < 1000 && E[LORIdx2] > 0 && E[LORIdx2] < 1000", kMagenta+1, 225);
 	
 	std::vector<TreeAnalysis*> vec;
 	vec.push_back(tAna_0);
@@ -177,9 +193,9 @@ vec[i]->m_color, 1);
 			arr->Draw();
 			TLatex l;
 			l.SetTextColor(12);
-			l.SetTextSize(0.045);
-	// 		l.DrawLatex((vec[i]->m_coords->m_Xhigh + vec[i-1]->m_coords->m_Xhigh)/2.+7, max0/2.+0.02-i*0.009, Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_Xhigh - 
-	//vec[i-1]->m_coords->m_Xhigh)));
+			l.SetTextSize(0.035);
+// 			l.DrawLatex((vec[i]->m_coords->m_Xhigh + vec[i-1]->m_coords->m_Xhigh)/2.+7, max0/2.+0.02-i*0.009, Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_Xhigh - 
+// vec[i-1]->m_coords->m_Xhigh)));
 			l.DrawLatex(vec[i-1]->m_coords->m_Xhigh+(i>0?1:0)*1.4, locY+0.007, Form("%.1f", (vec[i]->m_coords->m_Xhigh-vec[i-1]->m_coords->m_Xhigh)));
 		}
 	}
@@ -210,6 +226,7 @@ vec[i]->m_color, 1);
 	TGraph* g = new TGraph(vec.size());
 	for(int i=0; i<vec.size(); i++) {
 		cout << vec[i]->m_coords->m_Xhigh << endl;
+// 		g->SetPoint(i, vec[i]->m_zTargetSupport - vec[0]->m_zTargetSupport, vec[i]->m_coords->m_Xhigh - vec[0]->m_coords->m_Xhigh - (vec[i]->m_zTargetSupport - vec[0]->m_zTargetSupport));
 		g->SetPoint(i, vec[i]->m_zTargetSupport - vec[0]->m_zTargetSupport, vec[i]->m_coords->m_Xhigh - vec[0]->m_coords->m_Xhigh);
 	}
 	g->SetMarkerSize(1.5);
@@ -233,6 +250,7 @@ vec[i]->m_color, 1);
 	double err = 2;
 	Double_t x[n]  = {0, 20, 60, 70, 80};
 	Double_t y[n]  = {0, 20, 60, 70, 80};
+// 	Double_t y[n]  = {0, 0, 0, 0, 0};
 	Double_t ex[n] = {0, 0, 0, 0, 0};
 	Double_t ey[n] = {err, err, err, err, err};
 	gr = new TGraphErrors(n,x,y,ex,ey);	

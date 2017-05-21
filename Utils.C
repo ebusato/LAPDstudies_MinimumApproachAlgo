@@ -154,7 +154,11 @@ HalfMaxCoords* FindHalfMaxCoords(TH1F* h)
 class TreeAnalysis {
 public:
 	// zTargetSupport is in mm
-	TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color, double zTargetSupport);
+// 	TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color, double zTargetSupport);
+	TreeAnalysis(TTree* t, int firstEvent, double time, TCut cutEnergy, int color, double zTargetSupport);
+
+	double TimeFromEvt(int evt);
+	
 	TTree* m_tree;
 	TCut m_cutTimes;
 	TCut m_cutLOR;
@@ -168,6 +172,7 @@ public:
 	HalfMaxCoords* m_coords;
 };
 
+/*
 TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color, double zTargetSupport) : m_tree(t),
 							    m_cutEvents(cutEvents),
 							    m_cutEnergy(cutEnergy),
@@ -178,4 +183,37 @@ TreeAnalysis::TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color, 
 	m_cutLOR = "NoLORs == 1 && LORRmar < 15";
 	m_cutBeamPause = "abs(LORTMean - LORTRF - 7) > 5";
 // 	m_cutBeamPause = "";
+}
+*/
+
+// times is in seconds
+TreeAnalysis::TreeAnalysis(TTree* t, int firstEvent, double time, TCut cutEnergy, int color, double zTargetSupport) : m_tree(t),
+							    m_cutEnergy(cutEnergy),
+							    m_color(color),
+							    m_zTargetSupport(zTargetSupport)
+{
+	m_cutTimes = "T30[LORIdx1] > 20 && T30[LORIdx1] < 50 && T30[LORIdx2] > 20 && T30[LORIdx2] < 50";
+	m_cutLOR = "NoLORs == 1 && LORRmar < 15";
+	m_cutBeamPause = "abs(LORTMean - LORTRF - 7) > 5";
+// 	m_cutBeamPause = "";
+	
+	int firstTime = TimeFromEvt(firstEvent);
+	
+	TString cutEvents = Form("Evt > %d && TimeStamp*1/64e6 < %f", firstEvent, firstTime+time);
+	m_cutEvents = TCut(cutEvents);
+}
+
+// returns time for given event
+double TreeAnalysis::TimeFromEvt(int evt)
+{
+	m_tree->Draw(">>evtlist", Form("Evt == %d", evt));
+	TEventList *evtlist = (TEventList*)gDirectory->Get("evtlist");
+	int Nevents = evtlist->GetN();
+	cout << "Nevents = " << Nevents << endl;
+	if(Nevents != 1) {
+		cout << "Nevents != 1" << endl;
+	}
+	m_tree->GetEntry(evtlist->GetEntry(Nevents - 1));
+	double time = m_tree->GetLeaf("TimeStamp")->GetValue()*1/64e6;
+	return time;
 }
