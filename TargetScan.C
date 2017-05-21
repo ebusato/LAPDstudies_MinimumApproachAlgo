@@ -46,7 +46,7 @@ void TargetScan()
 	*/
 	
 // 	double time = 28.*60.; // time in seconds
-	double time = 10.*60.; // time in seconds
+	double time = 15.*60.; // time in seconds
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, 2500, time, "E[LORIdx1] > 400 && E[LORIdx1] < 650 && E[LORIdx2] > 400 && E[LORIdx2] < 650", kRed, 135);
 	// run118 has for an unknown reason a downward gain drift (511 keV peak at around 400 keV, hence the fancy energy cuts below
 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, 3500, time, "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kGreen+2, 140); //<-default
