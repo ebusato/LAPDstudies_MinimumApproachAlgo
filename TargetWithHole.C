@@ -18,6 +18,7 @@ void TargetWithHole()
 	TTree* t3 = (TTree*) f3->Get("tree");
 	TTree* t4 = (TTree*) f4->Get("tree");
 	
+	/*
 	int evtMax = 40000;
 // 	TreeAnalysis* tAna_00 = new TreeAnalysis(t00, Form("Evt > 1700 && Evt < %d", evtMax), "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kBlack, 140);
 	// run118 has for an unknown reason a downward gain drift (511 keV peak at around 400 keV, hence the fancy energy cuts below
@@ -27,6 +28,17 @@ void TargetWithHole()
 	TreeAnalysis* tAna_2 = new TreeAnalysis(t2, Form("Evt > 1400 && Evt < %d", evtMax), "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kBlue, 140);
 	TreeAnalysis* tAna_3 = new TreeAnalysis(t3, Form("Evt > 1200 && Evt < %d", evtMax), "E[LORIdx1] > 400 && E[LORIdx1] < 550 && E[LORIdx2] > 400 && E[LORIdx2] < 550", kMagenta, 140);  
 	TreeAnalysis* tAna_4 = new TreeAnalysis(t4, Form("Evt > 1000 && Evt < %d", evtMax), "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kYellow+1, 140);
+	*/
+	double time = 29.*60.; // time in seconds
+// 	TreeAnalysis* tAna_00 = new TreeAnalysis(t00, Form("Evt > 1700 && Evt < %d", evtMax), "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kBlack, 140);
+	// run118 has for an unknown reason a downward gain drift (511 keV peak at around 400 keV, hence the fancy energy cuts below
+// 	TreeAnalysis* tAna_00 = new TreeAnalysis(t00, Form("Evt > 3500 && Evt < %d", evtMax), "E[LORIdx1] > 300 && E[LORIdx1] < 500 && E[LORIdx2] > 300 && E[LORIdx2] < 500", kBlack, 140); // <-default
+	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, 900, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kRed, 140);
+	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, 900, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kGreen+2, 140);
+	TreeAnalysis* tAna_2 = new TreeAnalysis(t2, 1400, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kBlue, 140);
+	TreeAnalysis* tAna_3 = new TreeAnalysis(t3, 1200, time, "E[LORIdx1] > 400 && E[LORIdx1] < 550 && E[LORIdx2] > 400 && E[LORIdx2] < 550", kMagenta, 140);  
+	TreeAnalysis* tAna_4 = new TreeAnalysis(t4, 1000, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kYellow+1, 140);
+	
 	
 	std::vector<TreeAnalysis*> vec;
 	

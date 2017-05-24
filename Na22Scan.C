@@ -152,12 +152,16 @@ void Na22Scan()
 	h4.first->GetYaxis()->SetRangeUser(0, h4.first->GetMaximum()*1.2);
 	h4.first->Draw();
 	h4.second->Draw("same");
+	h4.second->Fit("gaus", "", "", -7, 7);
 	gPad->SetGridx();
 	gPad->SetGridy();
 	PutText(0.25, 0.8, kBlack, "LAPD");
 	PutText(0.25, 0.73, kBlack, "^{22}Na (14 kBq)");
 	gPad->Update();
-	
+	HalfMaxCoords* hmc = FindHalfMaxCoords(h4.second);
+	cout << "HalfMaxCoords= " << endl;
+	hmc->Print();
+		
 	/*
 	TLegend* leg = new TLegend(0.7,0.3,0.9,0.75);
 	leg->SetBorderSize(0);
