@@ -12,27 +12,33 @@ void SplittedTarget(TTree* t, TCut cut, int color)
 	
 	h->GetXaxis()->SetTitle("z_{MAR} [mm]");
 	h->GetYaxis()->SetTitle("Entries");
-	
+
 	TH1F* hKeys = MakeKernelPDFFromTH1(h, kRed, 1);
 	hKeys->Scale(h->GetMaximum()*1.2/hKeys->GetMaximum());
+	hKeys->GetXaxis()->SetTitle("z [mm]");
+	hKeys->GetYaxis()->SetTitle("Entries [a.u]");
 	
 	gStyle->SetPadGridX(1);
 	gStyle->SetPadGridY(1);
 	double xmin = -50;
 	double xmax = 50;
 	
-	h->Draw();
-	hKeys->Draw("same");
+	hKeys->SetFillColor(kBlue);
+	hKeys->SetLineColor(kBlue);
+
+	//h->Draw();
+	//hKeys->Draw("same");
+	hKeys->Draw();
 	
-	PutText(0.5, 0.8, kBlack, "LAPD", 0.05);
-	PutText(0.5, 0.72, kBlack, "Protons 65 MeV, I = 5 nA ", 0.05);
-	PutText(0.5, 0.64, kBlack, "Target PMMA slabs", 0.05);
+	PutText(0.2, 0.8, kBlack, "LAPD", 0.05);
+	PutText(0.2, 0.72, kBlack, "Protons 65 MeV, I = 5 nA ", 0.05);
+	PutText(0.2, 0.64, kBlack, "Target PMMA slabs", 0.05);
 }
 
 void SplittedTarget()
 {	
-  //TFile* f = new TFile("analysis_v2.18-calibG2/run112LOR_80kevts.root", "read");
-  TFile* f = new TFile("analysis_v3.2-calibG2/run112LOR_80kevts.root", "read");
+  TFile* f = new TFile("analysis_v2.18-calibG2/run112LOR_80kevts.root", "read");
+  //TFile* f = new TFile("analysis_v3.2-calibG2/run112LOR_80kevts.root", "read");
 	TTree* t = (TTree*) f->Get("tree");
 	
 	TCanvas* c0 = new TCanvas("c0", "c0");

@@ -173,16 +173,18 @@ vec[i]->m_color, 1);
 		if(i >= 5) {
 			locY = yStart - 5*yShift;
 		}
-		
+		/*
 		TLine* line = new TLine(vec[i]->m_coords->m_Xhigh, max0/2., vec[i]->m_coords->m_Xhigh, locY);
 		line->SetLineStyle(kDashed);
 		line->SetLineColor(12);
 		line->Draw();
+		*/
 		TEllipse* ell = new TEllipse(vec[i]->m_coords->m_Xhigh, max0/2., 1, 0.002);
 		ell->SetFillStyle(1);
 		ell->SetLineColor(12);
 		ell->SetFillColor(12);
 		ell->Draw();
+		/*
 		if(i>=1) {
 			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, locY, vec[i-1]->m_coords->m_Xhigh, locY, 0.015, "|-|");
 // 			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, vec[i]->m_coords->m_Yhigh, vec[i-1]->m_coords->m_Xhigh, vec[i-1]->m_coords->m_Yhigh, 0.015, "<|-|>");
@@ -198,11 +200,12 @@ vec[i]->m_color, 1);
 // vec[i-1]->m_coords->m_Xhigh)));
 			l.DrawLatex(vec[i-1]->m_coords->m_Xhigh+(i>0?1:0)*1.4, locY+0.007, Form("%.1f", (vec[i]->m_coords->m_Xhigh-vec[i-1]->m_coords->m_Xhigh)));
 		}
+		*/
 	}
 	
-	PutText(0.57, 0.81, kBlack, "LAPD", 0.047);
-	PutText(0.57, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ", 0.047);
-	PutText(0.57, 0.69, kBlack, "Targets: PMMA 5 #times 5 cm", 0.047);
+	PutText(0.53, 0.81, kBlack, "LAPD", 0.047);
+	PutText(0.53, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ", 0.047);
+	PutText(0.53, 0.69, kBlack, "Targets: PMMA 5 #times 5 #times 5 cm^{3}", 0.047);
 	
 	TLegend* leg = new TLegend(0.1929825,0.4288747,0.3709273,0.8619958);
 	leg->SetBorderSize(0);
@@ -262,7 +265,7 @@ vec[i]->m_color, 1);
 	g->Draw("p");
 	PutText(0.2, 0.81, kBlack, "LAPD");
 	PutText(0.2, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ");
-	PutText(0.2, 0.69, kBlack, "Targets: PMMA 5 #times 5 cm");
+	PutText(0.2, 0.69, kBlack, "Targets: PMMA 5 #times 5 #times 5 cm^{3}");
 	
 	TLegend* leg2 = new TLegend(0.5325815,0.2908705,0.8508772,0.4097665);
 	leg2->SetBorderSize(0);

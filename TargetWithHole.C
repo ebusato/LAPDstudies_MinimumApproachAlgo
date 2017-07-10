@@ -35,9 +35,9 @@ void TargetWithHole()
 // 	TreeAnalysis* tAna_00 = new TreeAnalysis(t00, Form("Evt > 3500 && Evt < %d", evtMax), "E[LORIdx1] > 300 && E[LORIdx1] < 500 && E[LORIdx2] > 300 && E[LORIdx2] < 500", kBlack, 140); // <-default
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, 900, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kRed, 140);
 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, 900, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kGreen+2, 140);
-	TreeAnalysis* tAna_2 = new TreeAnalysis(t2, 1400, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kBlue, 140);
-	TreeAnalysis* tAna_3 = new TreeAnalysis(t3, 1200, time, "E[LORIdx1] > 400 && E[LORIdx1] < 550 && E[LORIdx2] > 400 && E[LORIdx2] < 550", kMagenta, 140);  
-	TreeAnalysis* tAna_4 = new TreeAnalysis(t4, 1000, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kYellow+1, 140);
+	TreeAnalysis* tAna_2 = new TreeAnalysis(t2, 1400, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kYellow+1, 140);
+	TreeAnalysis* tAna_3 = new TreeAnalysis(t3, 1200, time, "E[LORIdx1] > 400 && E[LORIdx1] < 550 && E[LORIdx2] > 400 && E[LORIdx2] < 550", kBlue, 140);  
+	TreeAnalysis* tAna_4 = new TreeAnalysis(t4, 1000, time, "E[LORIdx1] > 420 && E[LORIdx1] < 600 && E[LORIdx2] > 420 && E[LORIdx2] < 600", kMagenta, 140);
 	
 	
 	std::vector<TreeAnalysis*> vec;
@@ -107,7 +107,7 @@ vec[i]->m_color, 1);
 		hKeys->Scale(hZmar->GetMaximum()/hKeys->GetMaximum());
 // 		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.25);
 		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.6);
-		hKeys->GetXaxis()->SetRangeUser(-33, 40);
+		hKeys->GetXaxis()->SetRangeUser(-40, 45);
 		hKeys->Draw("same");
 		TF1* hFit = FitKeysSideBand(hKeys, hKeys->GetName(), -90,-40,20,90);
 		hFit->Draw("same");
@@ -175,7 +175,7 @@ vec[i]->m_color, 1);
 	}
 	PutText(0.2, 0.81, kBlack, "LAPD", 0.046);
 	PutText(0.2, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ", 0.046);
-	PutText(0.2, 0.69, kBlack, "Targets: PMMA 5 #times 5 cm", 0.046);
+	PutText(0.2, 0.69, kBlack, "Targets: PMMA 5#times5#times5 cm^{3}", 0.046);
 	
 	TLegend* leg = new TLegend(0.6528822,0.3142251,0.9085213,0.5796178);
 	leg->SetBorderSize(0);
@@ -187,4 +187,17 @@ vec[i]->m_color, 1);
 	leg->Draw();
 	
 	c4->SaveAs("TargetWithHole_c4.png");
+
+	TCanvas* c5 = new TCanvas("c5", "c5", 500, 500);
+	vec[0]->m_hKeys->Draw();
+	vec[3]->m_hKeys->Draw("same");
+	PutText(0.2, 0.81, kBlack, "LAPD", 0.046);
+	PutText(0.2, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ", 0.046);
+	PutText(0.2, 0.69, kBlack, "Targets: PMMA 5 #times 5 cm", 0.046);
+	TLegend* leg2 = new TLegend(0.5662651,0.4883227,0.9036145,0.6178344);
+	leg2->SetBorderSize(0);
+	leg2->AddEntry(vec[0]->m_hKeys, "homogeneous", "l");
+	leg2->AddEntry(vec[3]->m_hKeys, "5 mm air cavity", "l");
+	leg2->Draw();
+	c5->SaveAs("TargetWithHole_c5.png");
 }
