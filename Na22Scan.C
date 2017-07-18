@@ -18,8 +18,8 @@ std::pair<TH1F*, TH1F*> GetZDistr(TString fileName, TString histoName, int color
   //h->Fit("gaus");
   h->GetYaxis()->SetTitleSize(0.05);
   h->GetXaxis()->SetTitleSize(0.05);
-  h->GetYaxis()->SetTitleOffset(1.47);
-  h->GetXaxis()->SetTitleOffset(1.3);
+  h->GetYaxis()->SetTitleOffset(1.5);
+  h->GetXaxis()->SetTitleOffset(1.25);
   h->GetYaxis()->SetLabelSize(0.05);
   h->GetXaxis()->SetLabelSize(0.05);
   //h->GetXaxis()->SetRangeUser(xmin,xmax);
@@ -65,8 +65,8 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 	g->GetYaxis()->SetTitle("mode[z_{ reco}] - mode[z_{ reco}^{0}] [mm]");
 	g->GetXaxis()->SetTitleSize(0.05);
 	g->GetYaxis()->SetTitleSize(0.05);
-	g->GetXaxis()->SetTitleOffset(1.3);
-	g->GetYaxis()->SetTitleOffset(1.35);
+	g->GetXaxis()->SetTitleOffset(1.25);
+	g->GetYaxis()->SetTitleOffset(1.5);
 	g->GetXaxis()->SetLabelSize(0.05);
 	g->GetYaxis()->SetLabelSize(0.05);
 	g->GetXaxis()->SetNdivisions(10);
@@ -74,10 +74,27 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 	TF1* f = new TF1("f", "x", -20, 40);
 	f->Draw("same");
 // 	g->Draw("apsame");
-	
-	
+	const Int_t n = 5;
+	double err = 1;
+	Double_t x[n]  = {0, 5, 10, 20, 38};
+	Double_t y[n]  = {0, 5, 10, 20, 38};
+// 	Double_t y[n]  = {0, 0, 0, 0, 0};
+	Double_t ex[n] = {0, 0, 0, 0, 0};
+	Double_t ey[n] = {err, err, err, err, err};
+	gr = new TGraphErrors(n,x,y,ex,ey);	
+	gr->SetFillStyle(3002);
+	gr->SetFillColor(kRed);
+	gr->SetLineColor(kRed);
+	gr->Draw("C3");
+	g->Draw("p");
 	PutText(0.27, 0.75, kBlack, "LAPD");
 	PutText(0.27, 0.67, kBlack, "^{22}Na (14.4 kBq)");
+
+	TLegend* leg2 = new TLegend(0.5325815,0.2908705,0.8508772,0.4097665);
+	leg2->SetBorderSize(0);
+	leg2->AddEntry(g, "Data", "p");
+	leg2->AddEntry(gr, "Expectation #pm 1 mm", "lf");
+	leg2->Draw("same");
 }
 
 TH2F* MakeTH2FromTH1s(std::vector<Data*> data)

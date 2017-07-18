@@ -141,7 +141,7 @@ vec[i]->m_color, 1);
 		//vec[i]->m_hKeys = hKeys_woBkg;	
 	}
 	
-	TCanvas* c4 = new TCanvas("c4", "c4", 800, 500);
+	TCanvas* c4 = new TCanvas("c4", "c4");
 // 	gPad->SetGridx(1);
 // 	gPad->SetGridy(1);
 	double max0 = Maximum(vec[0]->m_hKeys);
@@ -203,9 +203,9 @@ vec[i]->m_color, 1);
 		*/
 	}
 	
-	PutText(0.53, 0.81, kBlack, "LAPD", 0.047);
-	PutText(0.53, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ", 0.047);
-	PutText(0.53, 0.69, kBlack, "Targets: PMMA 5 #times 5 #times 5 cm^{3}", 0.047);
+	PutText(0.53, 0.78, kBlack, "LAPD", 0.047);
+	PutText(0.53, 0.72, kBlack, "Protons 65 MeV, I = 5 nA ", 0.047);
+	PutText(0.53, 0.66, kBlack, "Targets: PMMA 5#times5#times 5 cm^{3}", 0.047);
 	
 	TLegend* leg = new TLegend(0.1929825,0.4288747,0.3709273,0.8619958);
 	leg->SetBorderSize(0);
@@ -223,7 +223,7 @@ vec[i]->m_color, 1);
 	leg->Draw();
 	c4->SaveAs("TargetScan_c4.png");
 	
-	TCanvas* c5 = new TCanvas("c5", "c5", 800, 500);
+	TCanvas* c5 = new TCanvas("c5", "c5");
 	gPad->SetGridx(1);
 	gPad->SetGridy(1);
 	TGraph* g = new TGraph(vec.size());
@@ -238,12 +238,12 @@ vec[i]->m_color, 1);
 	g->Draw("ap");
 	g->GetXaxis()->SetTitle("z_{ target} - z_{ target}^{0} [mm]");
 	g->GetYaxis()->SetTitle("z_{ fall-off} - z_{ fall-off}^{0} [mm]");
-	g->GetXaxis()->SetTitleSize(0.06);
-	g->GetYaxis()->SetTitleSize(0.06);
+	g->GetXaxis()->SetTitleSize(0.05);
+	g->GetYaxis()->SetTitleSize(0.05);
 	g->GetXaxis()->SetTitleOffset(1.25);
-	g->GetYaxis()->SetTitleOffset(1.1);
-	g->GetXaxis()->SetLabelSize(0.06);
-	g->GetYaxis()->SetLabelSize(0.06);
+	g->GetYaxis()->SetTitleOffset(1.5);
+	g->GetXaxis()->SetLabelSize(0.05);
+	g->GetYaxis()->SetLabelSize(0.05);
 	g->GetXaxis()->SetNdivisions(512);
 	g->GetYaxis()->SetNdivisions(512);
 // 	TF1* f = new TF1("f", "x", -20, 100);
@@ -265,7 +265,7 @@ vec[i]->m_color, 1);
 	g->Draw("p");
 	PutText(0.2, 0.81, kBlack, "LAPD");
 	PutText(0.2, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ");
-	PutText(0.2, 0.69, kBlack, "Targets: PMMA 5 #times 5 #times 5 cm^{3}");
+	PutText(0.2, 0.69, kBlack, "Targets: PMMA 5#times5#times5 cm^{3}");
 	
 	TLegend* leg2 = new TLegend(0.5325815,0.2908705,0.8508772,0.4097665);
 	leg2->SetBorderSize(0);

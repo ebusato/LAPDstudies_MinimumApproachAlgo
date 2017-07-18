@@ -31,13 +31,13 @@ TH1F* MakeKernelPDFFromTH1(TH1F* h, int color, double rho)
   hKeys->SetFillColor(color);
   hKeys->SetFillStyle(3002);
   hKeys->GetYaxis()->SetTitle("Probability density [a. u.]");
-  hKeys->GetYaxis()->SetTitleSize(0.06);
-  hKeys->GetYaxis()->SetLabelSize(0.055);
-  hKeys->GetYaxis()->SetTitleOffset(1.39);
-  hKeys->GetXaxis()->SetTitle("z_{MAR} [mm]");
-  hKeys->GetXaxis()->SetTitleSize(0.06);
-  hKeys->GetXaxis()->SetLabelSize(0.055);
-  hKeys->GetXaxis()->SetTitleOffset(1.3);
+  hKeys->GetYaxis()->SetTitleSize(0.05);
+  hKeys->GetYaxis()->SetLabelSize(0.05);
+  hKeys->GetYaxis()->SetTitleOffset(1.5);
+  hKeys->GetXaxis()->SetTitle("z [mm]");
+  hKeys->GetXaxis()->SetTitleSize(0.05);
+  hKeys->GetXaxis()->SetLabelSize(0.05);
+  hKeys->GetXaxis()->SetTitleOffset(1.25);
   hKeys->SetLineWidth(2);
   for(int i=0; i<hKeys->GetNbinsX(); i++) {
 	  hKeys->SetBinError(i, 0);

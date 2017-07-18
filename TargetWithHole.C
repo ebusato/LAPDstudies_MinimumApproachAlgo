@@ -107,7 +107,7 @@ vec[i]->m_color, 1);
 		hKeys->Scale(hZmar->GetMaximum()/hKeys->GetMaximum());
 // 		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.25);
 		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.6);
-		hKeys->GetXaxis()->SetRangeUser(-40, 45);
+		hKeys->GetXaxis()->SetRangeUser(-45, 45);
 		hKeys->Draw("same");
 		TF1* hFit = FitKeysSideBand(hKeys, hKeys->GetName(), -90,-40,20,90);
 		hFit->Draw("same");
@@ -116,7 +116,7 @@ vec[i]->m_color, 1);
 		//vec[i]->m_hKeys = hKeys_woBkg;	
 	}
 	
-	TCanvas* c4 = new TCanvas("c4", "c4", 800, 500);
+	TCanvas* c4 = new TCanvas("c4", "c4");
 // 	gPad->SetGridx(1);
 // 	gPad->SetGridy(1);
 	double max0 = Maximum(vec[0]->m_hKeys);
@@ -177,7 +177,7 @@ vec[i]->m_color, 1);
 	PutText(0.2, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ", 0.046);
 	PutText(0.2, 0.69, kBlack, "Targets: PMMA 5#times5#times5 cm^{3}", 0.046);
 	
-	TLegend* leg = new TLegend(0.6528822,0.3142251,0.9085213,0.5796178);
+	TLegend* leg = new TLegend(0.6618911,0.3269639,0.9183381,0.5923567);
 	leg->SetBorderSize(0);
 	leg->AddEntry(vec[0]->m_hKeys, "homogeneous", "l");
 	leg->AddEntry(vec[1]->m_hKeys, "1 mm air cavity", "l");
@@ -188,7 +188,7 @@ vec[i]->m_color, 1);
 	
 	c4->SaveAs("TargetWithHole_c4.png");
 
-	TCanvas* c5 = new TCanvas("c5", "c5", 500, 500);
+	TCanvas* c5 = new TCanvas("c5", "c5");
 	vec[0]->m_hKeys->Draw();
 	vec[3]->m_hKeys->Draw("same");
 	PutText(0.2, 0.81, kBlack, "LAPD", 0.046);
