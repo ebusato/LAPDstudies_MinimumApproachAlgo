@@ -175,8 +175,9 @@ vec[i]->m_color, 1);
 	}
 	PutText(0.2, 0.81, kBlack, "LAPD", 0.046);
 	PutText(0.2, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ", 0.046);
-	PutText(0.2, 0.69, kBlack, "Targets: PMMA 5#times5#times5 cm^{3}", 0.046);
-	
+	PutText(0.2, 0.69, kBlack, "PMMA targets (5#times5#times5 cm^{3})", 0.046);
+	gPad->SetGridx(1);
+	gPad->SetGridy(1);
 	TLegend* leg = new TLegend(0.6618911,0.3269639,0.9183381,0.5923567);
 	leg->SetBorderSize(0);
 	leg->AddEntry(vec[0]->m_hKeys, "homogeneous", "l");

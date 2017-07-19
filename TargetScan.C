@@ -268,7 +268,7 @@ vec[i]->m_color, 1);
 	PutText(0.2, 0.75, kBlack, "Protons 65 MeV, I = 5 nA ");
 	PutText(0.2, 0.69, kBlack, "PMMA targets (5#times5#times5 cm^{3})");
 	
-	TLegend* leg2 = new TLegend(0.5325815,0.2908705,0.8508772,0.4097665);
+	TLegend* leg2 = new TLegend(0.5,0.2908705,0.8508772,0.4097665);
 	leg2->SetBorderSize(0);
 	leg2->AddEntry(g, "Data", "p");
 	leg2->AddEntry(gr, "Expectation #pm 2 mm", "lf");
