@@ -32,7 +32,7 @@ void SplittedTarget(TTree* t, TCut cut, int color)
 	
 	PutText(0.2, 0.8, kBlack, "LAPD", 0.05);
 	PutText(0.2, 0.72, kBlack, "Protons 65 MeV, I = 5 nA ", 0.05);
-	PutText(0.2, 0.64, kBlack, "Target PMMA slabs", 0.05);
+	PutText(0.2, 0.64, kBlack, "Splitted PMMA target", 0.05);
 }
 
 void SplittedTarget()
