@@ -62,7 +62,7 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 	g->SetMarkerSize(1.5);
 	g->Draw("ap");
 	g->GetXaxis()->SetTitle("z_{ source} - z_{ source}^{0} [mm]");
-	g->GetYaxis()->SetTitle("mode[z_{ reco}] - mode[z_{ reco}^{0}] [mm]");
+	g->GetYaxis()->SetTitle("mode[z] - mode[z^{0}] [mm]");
 	g->GetXaxis()->SetTitleSize(0.05);
 	g->GetYaxis()->SetTitleSize(0.05);
 	g->GetXaxis()->SetTitleOffset(1.25);
@@ -90,7 +90,7 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 	PutText(0.27, 0.75, kBlack, "LAPD");
 	PutText(0.27, 0.67, kBlack, "^{22}Na (14.4 kBq)");
 
-	TLegend* leg2 = new TLegend(0.5325815,0.2908705,0.8508772,0.4097665);
+	TLegend* leg2 = new TLegend(0.5,0.2908705,0.8508772,0.4097665);
 	leg2->SetBorderSize(0);
 	leg2->AddEntry(g, "Data", "p");
 	leg2->AddEntry(gr, "Expectation #pm 1 mm", "lf");
@@ -237,7 +237,7 @@ void Na22Scan()
 	h2D->SetFillColor(kBlue);
 	h2D->SetLineColor(kBlue);
 	h2D->GetYaxis()->SetTitle("z_{ target} - z_{ target}^{0} [mm]");
-	h2D->GetXaxis()->SetTitle("z_{ reco} [mm]");
+	h2D->GetXaxis()->SetTitle("z [mm]");
 	h2D->GetXaxis()->SetRangeUser(-70,70);
 	h2D->Draw("violiny(12000000)");
 	PutText(0.22, 0.8, kBlack, "LAPD");
