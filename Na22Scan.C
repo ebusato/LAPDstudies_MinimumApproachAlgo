@@ -72,7 +72,7 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 	g->GetXaxis()->SetNdivisions(10);
 	g->GetYaxis()->SetNdivisions(10);
 	TF1* f = new TF1("f", "x", -20, 40);
-	f->Draw("same");
+	//f->Draw("same");
 // 	g->Draw("apsame");
 	const Int_t n = 5;
 	double err = 1;
@@ -83,8 +83,9 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 	Double_t ey[n] = {err, err, err, err, err};
 	gr = new TGraphErrors(n,x,y,ex,ey);	
 	gr->SetFillStyle(3002);
-	gr->SetFillColor(kRed);
-	gr->SetLineColor(kRed);
+	//gr->SetLineStyle(2);
+	gr->SetFillColor(15);
+	gr->SetLineColor(kBlack);
 	gr->Draw("C3");
 	g->Draw("p");
 	PutText(0.27, 0.75, kBlack, "LAPD");
@@ -182,13 +183,14 @@ void Na22Scan()
 
 	TCanvas* c0_ForPresentation = new TCanvas("c0_ForPresentation", "c0_ForPresentation");
 	h4.first->GetYaxis()->SetRangeUser(0, h4.first->GetMaximum()*1.1);
-	h4.first->SetLineColor(kRed);
-	h4.first->SetFillColor(kRed);
+	h4.first->SetLineColor(kBlack);
+	h4.first->SetFillColor(kBlack);
 	h4.first->SetLineWidth(2);
 	h4.first->Draw();
-	h4.second->SetLineColor(kBlue);
-	h4.second->SetFillColor(kBlue);
+	h4.second->SetLineColor(15);
+	h4.second->SetFillColor(15);
 	h4.second->Draw("same");
+	h4.first->Draw("same");
 	//h4.second->Fit("gaus", "", "", -7, 7);
 	gPad->SetGridx();
 	gPad->SetGridy();
@@ -202,7 +204,7 @@ void Na22Scan()
 	TLegend* leg2 = new TLegend(0.5515759,0.6231423,0.8825215,0.7526539);
 	leg2->SetBorderSize(1);
 	leg2->AddEntry(h4.first, "MA algorithm profile", "l");
-	leg2->AddEntry(h4.second, "Kernel profile", "l");
+	leg2->AddEntry(h4.second, "Kernel profile", "f");
 	leg2->Draw();
 	c0_ForPresentation->Update();
 	c0_ForPresentation->SaveAs("Na22Scan_c0_ForPresentation.png");

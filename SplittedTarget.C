@@ -23,8 +23,8 @@ void SplittedTarget(TTree* t, TCut cut, int color)
 	double xmin = -50;
 	double xmax = 50;
 	
-	hKeys->SetFillColor(kBlue);
-	hKeys->SetLineColor(kBlue);
+	hKeys->SetFillColor(kBlack);
+	hKeys->SetLineColor(kBlack);
 
 	//h->Draw();
 	//hKeys->Draw("same");
