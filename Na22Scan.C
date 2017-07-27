@@ -60,6 +60,7 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 		g->SetPoint(i, data[i]->m_z, h->GetBinCenter(h->GetMaximumBin()) - h0->GetBinCenter(h0->GetMaximumBin()));
 	}
 	g->SetMarkerSize(1.5);
+	//g->SetMarkerStyle(4);
 	g->Draw("ap");
 	g->GetYaxis()->SetRangeUser(0,60);
 	//g->GetXaxis()->SetRangeUser(0,50);
@@ -86,7 +87,7 @@ void MakePlotMaxVsRun(std::vector<Data*> data)
 	Double_t ex[n] = {0, 0, 0, 0, 0};
 	Double_t ey[n] = {err, err, err, err, err};
 	TGraphErrors* gr = new TGraphErrors(n,x,y,ex,ey);	
-	gr->SetFillStyle(3002);
+	gr->SetFillStyle(3001);
 	//gr->SetLineStyle(2);
 	gr->SetFillColor(15);
 	gr->SetLineColor(kBlack);
@@ -230,11 +231,11 @@ void Na22Scan()
 	data.push_back(new Data(h8.second, h8.second, (16.5-14)*10 + 10));
 
 	TH2F* h2D = MakeTH2FromTH1s(data);
-	h2D->SetBarWidth(14);
+	h2D->SetBarWidth(5.5);
 	//h2D->SetFillStyle(3004);
-	h2D->SetFillStyle(0);
-	h2D->SetFillColor(kBlack);
+	h2D->SetFillStyle(3002);
 	h2D->SetLineColor(kBlack);
+	h2D->SetFillColor(kBlack);
 	h2D->GetYaxis()->SetTitle("z_{ source} - z_{ source}^{0} [mm]");
 	h2D->GetXaxis()->SetTitle("z [mm]");
 	h2D->GetXaxis()->SetRangeUser(-70,70);
@@ -256,7 +257,7 @@ void Na22Scan()
 	subpad->Draw();
 	subpad->cd();
 	h2D->GetXaxis()->SetRangeUser(-40, 40);
-	h2D->GetYaxis()->SetRangeUser(0,100);
+	h2D->GetYaxis()->SetRangeUser(0,200);
 	h2D->GetXaxis()->SetTickLength(0.02);
 	h2D->GetYaxis()->SetTickLength(0.02);
 	h2D->Draw("violiny(12000000)");

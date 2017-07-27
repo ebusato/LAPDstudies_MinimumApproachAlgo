@@ -258,7 +258,7 @@ vec[i]->m_color, 1);
 	Double_t ex[n] = {0, 0, 0, 0, 0};
 	Double_t ey[n] = {err, err, err, err, err};
 	gr = new TGraphErrors(n,x,y,ex,ey);	
-	gr->SetFillStyle(3002);
+	gr->SetFillStyle(3001);
 	gr->SetFillColor(15);
 	gr->SetLineColor(kBlack);
 	gr->Draw("C3");
