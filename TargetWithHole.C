@@ -143,30 +143,37 @@ vec[i]->m_color, 1);
 	}
 	
 	for(int i=0; i<vec.size(); i++) {
-		double locY = yStart - i*yShift;
+	  double locY = yStart - i*yShift;
 		if(i == 0) {
 			locY = yStart - yShift;
 		}
+	  
 
+	  //	  double locY = yStart - (5-i)*yShift;
 		TLine* line = new TLine(vec[i]->m_coords->m_Xhigh, max0/2., vec[i]->m_coords->m_Xhigh, locY);
-		line->SetLineStyle(kDashed);
+		//line->SetLineStyle(kDashed);
+		line->SetLineStyle(kDotted);
 		line->SetLineColor(12);
 		line->Draw();
-		TEllipse* ell = new TEllipse(vec[i]->m_coords->m_Xhigh, max0/2., 0.2, 0.001);
+		TEllipse* ell = new TEllipse(vec[i]->m_coords->m_Xhigh, max0/2., 0.5, 0.002);
 		ell->SetFillStyle(1);
-		ell->SetFillColor(12);
-		ell->SetLineColor(12);
+		//ell->SetFillColor(12);
+		//ell->SetLineColor(12);
+		ell->SetFillColor(kBlack);
+		ell->SetLineColor(kBlack);
 		ell->Draw();
 		if(i>0) {
 			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, locY, vec[0]->m_coords->m_Xhigh, locY, 0.015, "<->");
 // 			TArrow* arr = new TArrow(vec[i]->m_coords->m_Xhigh, vec[i]->m_coords->m_Yhigh, vec[i-1]->m_coords->m_Xhigh, vec[i-1]->m_coords->m_Yhigh, 0.015, "<|-|>");
 			arr->SetLineColor(12);
+			arr->SetLineColor(kBlack);
 			arr->SetFillColor(12);
 			arr->SetAngle(170);
 			arr->SetArrowSize(0.0008);
 			arr->Draw();
 			TLatex l;
-			l.SetTextColor(12);
+			//l.SetTextColor(12);
+			l.SetTextColor(kBlack);
 			l.SetTextSize(0.045);
 // 			l.DrawLatex((vec[i]->m_coords->m_Xhigh + vec[i-1]->m_coords->m_Xhigh)/2.+7, max0/2.+0.02-i*0.009, Form("#Delta z_{MAR} = %.1f mm", -1*(vec[i]->m_coords->m_Xhigh - 
 //vec[i-1]->m_coords->m_Xhigh)));
