@@ -47,6 +47,7 @@ void TargetScan()
 	
 // 	double time = 28.*60.; // time in seconds
 	double time = 15.*60.; // time in seconds
+	//double time = 0.5*60.; // time in seconds
 	TreeAnalysis* tAna_0 = new TreeAnalysis(t0, 2500, time, "E[LORIdx1] > 400 && E[LORIdx1] < 650 && E[LORIdx2] > 400 && E[LORIdx2] < 650", kRed, 135);
 	// run118 has for an unknown reason a downward gain drift (511 keV peak at around 400 keV, hence the fancy energy cuts below
 	TreeAnalysis* tAna_1 = new TreeAnalysis(t1, 3500, time, "E[LORIdx1] > 300 && E[LORIdx1] < 570 && E[LORIdx2] > 300 && E[LORIdx2] < 570", kGreen+2, 140); //<-default
@@ -208,6 +209,7 @@ vec[i]->m_color, 1);
 	PutText(0.51, 0.66, kBlack, "PMMA targets (5#times5#times5 cm^{3})");
 	gPad->SetGridx(1);
 	gPad->SetGridy(1);
+	/*
 	TLegend* leg = new TLegend(0.1929825,0.4288747,0.3709273,0.8619958);
 	leg->SetBorderSize(0);
 	leg->AddEntry(vec[0]->m_hKeys, "initial position", "l");
@@ -221,7 +223,128 @@ vec[i]->m_color, 1);
 	leg->AddEntry(vec[8]->m_hKeys, "10 mm shift", "l");
 	leg->AddEntry(vec[9]->m_hKeys, "10 mm shift", "l");
 // 	leg->AddEntry(vec[10]->m_hKeys, "20 mm shift", "l");
+*/
+	TLegend* leg = new TLegend(0.1991404,0.4819533,0.260745,0.8407643);
+	leg->SetBorderSize(0);
+	leg->SetMargin(1);
+	leg->SetEntrySeparation(0.01);
+	leg->AddEntry(vec[0]->m_hKeys, " ", "l");
+	leg->AddEntry(vec[1]->m_hKeys, " ", "l");
+	leg->AddEntry(vec[2]->m_hKeys, " ", "l");
+	leg->AddEntry(vec[3]->m_hKeys, " ", "l");
+	leg->AddEntry(vec[4]->m_hKeys, " ", "l");
+	leg->AddEntry(vec[5]->m_hKeys, " ", "l");
+	leg->AddEntry(vec[6]->m_hKeys, " ", "l");
+	leg->AddEntry(vec[7]->m_hKeys, " ", "l");
+	leg->AddEntry(vec[8]->m_hKeys, " ", "l");
+	leg->AddEntry(vec[9]->m_hKeys, " ", "l");
 	leg->Draw();
+
+	PutText(0.268, 0.81, kBlack, "initial position", 0.045);
+	PutText(0.29, 0.719, kBlack, "5 mm shifts", 0.045);
+	PutText(0.29, 0.56, kBlack, "10 mm shifts", 0.045);
+
+	Double_t Graph0_fx1[4] = {
+	  -50,
+	  -47.13,
+	  -47.13,
+	  -50};
+	Double_t Graph0_fy1[4] = {
+	  0.225,
+	  0.215,
+	  0.19,
+	  0.18};
+	TGraph *graph = new TGraph(4,Graph0_fx1,Graph0_fy1);
+	graph->SetName("Graph0");
+	graph->SetTitle("Graph");
+	graph->SetFillColor(1);
+	graph->SetLineColor(1);
+	graph->SetLineWidth(2);
+	graph->SetMarkerStyle(8);
+	TH1F *Graph_Graph1 = new TH1F("Graph_Graph1","Graph",100,-51.19121,-44.58949);
+	Graph_Graph1->SetMinimum(0.2825257);
+	Graph_Graph1->SetMaximum(0.3783401);
+	Graph_Graph1->SetDirectory(0);
+	Graph_Graph1->SetStats(0);
+	Graph_Graph1->SetLineWidth(2);
+	Graph_Graph1->SetMarkerStyle(8);
+	Graph_Graph1->GetXaxis()->SetNdivisions(506);
+	Graph_Graph1->GetXaxis()->SetLabelFont(42);
+	Graph_Graph1->GetXaxis()->SetLabelOffset(0.015);
+	Graph_Graph1->GetXaxis()->SetLabelSize(0.06);
+	Graph_Graph1->GetXaxis()->SetTitleSize(0.07);
+	Graph_Graph1->GetXaxis()->SetTitleFont(42);
+	Graph_Graph1->GetYaxis()->SetNdivisions(506);
+	Graph_Graph1->GetYaxis()->SetLabelFont(42);
+	Graph_Graph1->GetYaxis()->SetLabelOffset(0.015);
+	Graph_Graph1->GetYaxis()->SetLabelSize(0.06);
+	Graph_Graph1->GetYaxis()->SetTitleSize(0.07);
+	Graph_Graph1->GetYaxis()->SetTitleOffset(1.1);
+	Graph_Graph1->GetYaxis()->SetTitleFont(42);
+	Graph_Graph1->GetZaxis()->SetLabelFont(42);
+	Graph_Graph1->GetZaxis()->SetLabelOffset(0.015);
+	Graph_Graph1->GetZaxis()->SetLabelSize(0.06);
+	Graph_Graph1->GetZaxis()->SetTitleSize(0.07);
+	Graph_Graph1->GetZaxis()->SetTitleOffset(1.1);
+	Graph_Graph1->GetZaxis()->SetTitleFont(42);
+	graph->SetHistogram(Graph_Graph1);
+	graph->Draw("L");
+
+	Double_t Graph1_fx1[4] = {
+	  -50,
+	  -47.13,
+	  -47.13,
+	  -50};
+	Double_t Graph1_fy1[4] = {
+	  0.175,
+	  0.165,
+	  0.125,
+	  0.115};
+	TGraph *graph1 = new TGraph(4,Graph1_fx1,Graph1_fy1);
+	graph1->SetName("Graph0");
+	graph1->SetTitle("Graph");
+	graph1->SetFillColor(1);
+	graph1->SetLineColor(1);
+	graph1->SetLineWidth(2);
+	graph1->SetMarkerStyle(8);
+
+	TH1F *Graph_Graph_Graph11 = new TH1F("Graph_Graph_Graph11","Graph",100,-51.19121,-44.58949);
+	Graph_Graph_Graph11->SetMinimum(0.2825257);
+	Graph_Graph_Graph11->SetMaximum(0.3783401);
+	Graph_Graph_Graph11->SetDirectory(0);
+	Graph_Graph_Graph11->SetStats(0);
+	Graph_Graph_Graph11->SetLineWidth(2);
+	Graph_Graph_Graph11->SetMarkerStyle(8);
+	Graph_Graph_Graph11->GetXaxis()->SetNdivisions(506);
+	Graph_Graph_Graph11->GetXaxis()->SetLabelFont(42);
+	Graph_Graph_Graph11->GetXaxis()->SetLabelOffset(0.015);
+	Graph_Graph_Graph11->GetXaxis()->SetLabelSize(0.06);
+	Graph_Graph_Graph11->GetXaxis()->SetTitleSize(0.07);
+	Graph_Graph_Graph11->GetXaxis()->SetTitleFont(42);
+	Graph_Graph_Graph11->GetYaxis()->SetNdivisions(506);
+	Graph_Graph_Graph11->GetYaxis()->SetLabelFont(42);
+	Graph_Graph_Graph11->GetYaxis()->SetLabelOffset(0.015);
+	Graph_Graph_Graph11->GetYaxis()->SetLabelSize(0.06);
+	Graph_Graph_Graph11->GetYaxis()->SetTitleSize(0.07);
+	Graph_Graph_Graph11->GetYaxis()->SetTitleOffset(1.1);
+	Graph_Graph_Graph11->GetYaxis()->SetTitleFont(42);
+	Graph_Graph_Graph11->GetZaxis()->SetLabelFont(42);
+	Graph_Graph_Graph11->GetZaxis()->SetLabelOffset(0.015);
+	Graph_Graph_Graph11->GetZaxis()->SetLabelSize(0.06);
+	Graph_Graph_Graph11->GetZaxis()->SetTitleSize(0.07);
+	Graph_Graph_Graph11->GetZaxis()->SetTitleOffset(1.1);
+	Graph_Graph_Graph11->GetZaxis()->SetTitleFont(42);
+	graph1->SetHistogram(Graph_Graph_Graph11);
+	
+	graph1->Draw("l");
+
+	TLine *line1 = new TLine(-47.58472,0.201,-45.13964,0.201);
+	line1->SetLineWidth(2);
+	line1->Draw();
+	TLine* line2 = new TLine(-47.58472,0.145,-45.13964,0.145);
+	line2->SetLineWidth(2);
+	line2->Draw();
+
 	c4->SaveAs("TargetScan_c4.png");
 	
 	TCanvas* c5 = new TCanvas("c5", "c5");
