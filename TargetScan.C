@@ -346,6 +346,7 @@ vec[i]->m_color, 1);
 	line2->Draw();
 
 	c4->SaveAs("TargetScan_c4.png");
+	c4->SaveAs("TargetScan_c4.pdf");
 	
 	TCanvas* c5 = new TCanvas("c5", "c5");
 	gPad->SetGridx(1);
@@ -380,7 +381,7 @@ vec[i]->m_color, 1);
 // 	Double_t y[n]  = {0, 0, 0, 0, 0};
 	Double_t ex[n] = {0, 0, 0, 0, 0};
 	Double_t ey[n] = {err, err, err, err, err};
-	gr = new TGraphErrors(n,x,y,ex,ey);	
+	TGraphErrors* gr = new TGraphErrors(n,x,y,ex,ey);	
 	gr->SetFillStyle(3001);
 	gr->SetFillColor(15);
 	gr->SetLineColor(kBlack);
@@ -398,4 +399,5 @@ vec[i]->m_color, 1);
 	leg2->Draw("same");
 	
 	c5->SaveAs("TargetScan_c5.png");
+	c5->SaveAs("TargetScan_c5.pdf");
 }

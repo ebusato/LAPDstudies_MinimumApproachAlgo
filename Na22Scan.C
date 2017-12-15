@@ -263,6 +263,7 @@ void Na22Scan()
 	h2D->Draw("violiny(12000000)");
 
 	c1->SaveAs("Na22Scan_c1.png");
+	c1->SaveAs("Na22Scan_c1.pdf");
 	
 
 	TCanvas* c2 = new TCanvas("c2", "c2");

@@ -195,6 +195,7 @@ vec[i]->m_color, 1);
 	leg->Draw();
 	
 	c4->SaveAs("TargetWithHole_c4.png");
+	c4->SaveAs("TargetWithHole_c4.pdf");
 
 	TCanvas* c5 = new TCanvas("c5", "c5");
 	vec[0]->m_hKeys->Draw();
