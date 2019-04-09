@@ -157,6 +157,7 @@ vec[i]->m_color, 1);
 		  }*/
 		// 		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 2.4);
 		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 1.8);
+		hKeys->SetName(Form("hKeys_zTarget=%2.1fcm", vec[i]->m_zTargetSupport/10));
 		hZmar->Scale(1/hZmar->Integral());
 		hZmar->Draw("hist");
 		hKeys->Scale(hZmar->GetMaximum()/hKeys->GetMaximum());
@@ -167,9 +168,19 @@ vec[i]->m_color, 1);
 		//TF1* hFit = FitKeysSideBand(hKeys, hKeys->GetName(), -90,-50,20,90);
 		//hFit->Draw("same");
 		//TH1F* hKeys_woBkg = Subtract(hKeys, hFit);
-		vec[i]->m_hKeys = hKeys;			
+		vec[i]->m_hKeys = hKeys;
+		vec[i]->m_hZmar = hZmar;
 		//vec[i]->m_hKeys = hKeys_woBkg;	
 	}
+
+	// Write distributions to file
+	TFile* f = new TFile("KernelDistributions_DataNice2017.root", "recreate");
+	for(int i=0; i<vec.size(); i++) {
+	  vec[i]->m_hKeys->Write();
+	  //vec[i]->m_hZmar->Write();
+	}
+	f->Write();
+	f->Close();
 	
 	TCanvas* c4 = new TCanvas("c4", "c4");
 // 	gPad->SetGridx(1);

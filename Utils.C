@@ -158,23 +158,23 @@ HalfMaxCoords* FindHalfMaxCoords(TH1F* h)
 
 class TreeAnalysis {
 public:
-	// zTargetSupport is in mm
-// 	TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color, double zTargetSupport);
-	TreeAnalysis(TTree* t, int firstEvent, double time, TCut cutEnergy, int color, double zTargetSupport);
-
-	double TimeFromEvt(int evt);
-	
-	TTree* m_tree;
-	TCut m_cutTimes;
-	TCut m_cutLOR;
-	TCut m_cutBeamPause;
-	TCut m_cutEvents;
-	TCut m_cutEnergy;
-	int m_color;	
-	double m_zTargetSupport;
-	
-	TH1F* m_hKeys;
-	HalfMaxCoords* m_coords;
+  // zTargetSupport is in mm
+  // 	TreeAnalysis(TTree* t, TCut cutEvents, TCut cutEnergy, int color, double zTargetSupport);
+  TreeAnalysis(TTree* t, int firstEvent, double time, TCut cutEnergy, int color, double zTargetSupport);
+  
+  double TimeFromEvt(int evt);
+  
+  TTree* m_tree;
+  TCut m_cutTimes;
+  TCut m_cutLOR;
+  TCut m_cutBeamPause;
+  TCut m_cutEvents;
+  TCut m_cutEnergy;
+  int m_color;	
+  double m_zTargetSupport;
+  TH1F* m_hZmar;
+  TH1F* m_hKeys;
+  HalfMaxCoords* m_coords;
 };
 
 /*
@@ -222,3 +222,4 @@ double TreeAnalysis::TimeFromEvt(int evt)
 	double time = m_tree->GetLeaf("TimeStamp")->GetValue()*1/64e6;
 	return time;
 }
+
