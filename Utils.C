@@ -1,8 +1,10 @@
 
 using namespace RooFit;
+#include "RooDataSet.h"
 
 TH1F* MakeKernelPDFFromTH1(TH1F* h, int color, double rho)
 {
+  cout << "Using rho = " << rho << endl;
   RooRealVar* z = new RooRealVar("z", "z", -100, 100);
   z->setBins(10000);
   RooDataSet* ds = new RooDataSet("ds","ds",RooArgSet(*z)) ;
@@ -17,7 +19,6 @@ TH1F* MakeKernelPDFFromTH1(TH1F* h, int color, double rho)
 	}
   }
   RooDataHist* dh = new RooDataHist("dh", "dh", *z, Import(*h));
-  
 //   RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::MirrorBoth, 2) ;
   RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::NoMirror, rho) ;
 //   RooPlot* frame = z->frame() ;

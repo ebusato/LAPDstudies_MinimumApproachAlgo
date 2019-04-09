@@ -1,7 +1,11 @@
 #include "Utils.C"
+#include "/home/ebusato/Travail/AVIRM/avirmStyle/avirmStyle.C"
+
 
 void TargetScan()
 {
+  SetAvirmStyle();
+  /*
 	TFile* f0 = new TFile("analysis_v3.2-calibG2/run110LOR.root", "read"); // z = 13.5 cm
 // 	TFile* f1 = new TFile("analysis_v3.2-calibG2/run91LOR.root", "read"); // z = 14 cm
 	TFile* f1 = new TFile("analysis_v3.3-calibK1/run118LOR.root", "read"); // z = 14 cm // <- default
@@ -15,7 +19,20 @@ void TargetScan()
 	TFile* f8 = new TFile("analysis_v3.3-calibK1/run153LOR.root", "read"); // z = 19.5 cm
 	TFile* f9 = new TFile("analysis_v3.3-calibK1/run156LOR.root", "read"); // z = 20.5 cm
 	TFile* f10 = new TFile("analysis_v3.3-calibK1/run170LOR.root", "read"); // z = 22.5 cm
-	
+  */
+  TFile* f0 = new TFile("~/godaq/analysis_v3.3-calibG2/run110LOR.root", "read"); // z = 13.5 cm
+  TFile* f1 = new TFile("~/godaq/analysis_v3.3-calibK1/run118LOR.root", "read"); // z = 14 cm // <- default
+  TFile* f2 = new TFile("~/godaq/analysis_v3.3-calibK1/run136LOR.root", "read"); // z = 14.5 cm
+  TFile* f3 = new TFile("~/godaq/analysis_v3.3-calibK1/run140LOR.root", "read"); // z = 15 cm
+  TFile* f4 = new TFile("~/godaq/analysis_v3.3-calibK1/run143LOR.root", "read"); // z = 15.5 cm
+  TFile* f5 = new TFile("~/godaq/analysis_v3.3-calibK1/run147LOR.root", "read"); // z = 16.5 cm
+  TFile* f6 = new TFile("~/godaq/analysis_v3.3-calibK1/run149LOR.root", "read"); // z = 17.5 cm
+  TFile* f7 = new TFile("~/godaq/analysis_v3.3-calibK1/run151LOR.root", "read"); // z = 18.5 cm
+  TFile* f8 = new TFile("~/godaq/analysis_v3.3-calibK1/run153LOR.root", "read"); // z = 19.5 cm
+  TFile* f9 = new TFile("~/godaq/analysis_v3.3-calibK1/run156LOR.root", "read"); // z = 20.5 cm
+  TFile* f10 = new TFile("~/godaq/analysis_v3.3-calibK1/run170LOR.root", "read"); // z = 22.5 cm
+  
+  
 	TTree* t0 = (TTree*) f0->Get("tree");
 	TTree* t1 = (TTree*) f1->Get("tree");
 	TTree* t2 = (TTree*) f2->Get("tree");
@@ -124,12 +141,11 @@ vec[i]->m_color, 1);
 		c3->cd(i+1);
 		TString hName("hZmar");
 		hName+=i;
-		TH1F* hZmar = Draw(vec[i]->m_tree, "LORZmar", vec[i]->m_cutEnergy && vec[i]->m_cutLOR && vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 2000, -100, 
-100, vec[i]->m_color, 3);
-// 		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 2.4);
+		TH1F* hZmar = Draw(vec[i]->m_tree, "LORZmar", vec[i]->m_cutEnergy && vec[i]->m_cutLOR && vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 2000, -100, 100, vec[i]->m_color, 3);
+		// 		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 2.4);
 		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 1.8);
 		hZmar->Scale(1/hZmar->Integral());
-		hZmar->Draw();
+		hZmar->Draw("hist");
 		hKeys->Scale(hZmar->GetMaximum()/hKeys->GetMaximum());
 // 		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.25);
 		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.95);
