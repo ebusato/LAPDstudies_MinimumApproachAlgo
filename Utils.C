@@ -10,22 +10,25 @@ TH1F* MakeKernelPDFFromTH1(TH1F* h, int color, double rho)
   RooDataSet* ds = new RooDataSet("ds","ds",RooArgSet(*z)) ;
   for(int i=0; i<h->GetNbinsX(); i++) {
 	double binContent = h->GetBinContent(i);
+	//double binError = h->GetBinError(i);
 	if(binContent!=0) {
 	  double binCenter = h->GetBinCenter(i);
 	  z->setVal(binCenter);
 	  for(int j=0; j<binContent; j++) {
 	  	ds->add(RooArgSet(*z));
-	  }
+		}
+	  //cout << "binContent = " << binContent << endl;
+	  //					   ds->add(RooArgSet(*z), binContent);
 	}
   }
-  RooDataHist* dh = new RooDataHist("dh", "dh", *z, Import(*h));
-//   RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::MirrorBoth, 2) ;
-  RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::NoMirror, rho) ;
-   RooPlot* frame = z->frame() ;
+	//RooDataHist* dh = new RooDataHist("dh", "dh", *z, Import(*h));
+	  //RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::MirrorBoth, 2) ;
+	    RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::NoMirror, rho) ;
+//   RooPlot* frame = z->frame() ;
 // //   ds->plotOn(frame);
-   dh->plotOn(frame);
-   kest1.plotOn(frame);
-   frame->Draw();
+//   dh->plotOn(frame);
+//   kest1.plotOn(frame);
+//   frame->Draw();
 //   
   TH1F* hKeys = (TH1F*) kest1.createHistogram("hKeys", *z);
   hKeys->SetLineColor(color);
@@ -98,6 +101,7 @@ TH1F* Draw(TTree* t, TString var, TCut cut, TString hName, int Nbins, double xmi
 	h->SetLineColor(color);
 	h->SetMarkerColor(color);
 	h->SetLineWidth(linesize);
+	h->Sumw2();
 	return h;
 }
 

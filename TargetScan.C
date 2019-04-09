@@ -142,6 +142,19 @@ vec[i]->m_color, 1);
 		TString hName("hZmar");
 		hName+=i;
 		TH1F* hZmar = Draw(vec[i]->m_tree, "LORZmar", vec[i]->m_cutEnergy && vec[i]->m_cutLOR && vec[i]->m_cutEvents && vec[i]->m_cutTimes && vec[i]->m_cutBeamPause, hName.Data(), 2000, -100, 100, vec[i]->m_color, 3);
+		hZmar->Sumw2();
+		cout << "hZmar integral " << hZmar->Integral() << endl;
+		/*		TH1F* hZmar2 = (TH1F*) hZmar->Clone("hZmar2");
+		for(int itemp = 0; itemp<100; itemp++) {
+		  hZmar2->Add(hZmar);
+		}
+		TH1F* hZmarbis = (TH1F*) hZmar2->Clone("hZmarbis");
+		hZmarbis->Scale(1500/hZmarbis->Integral());
+		*/
+		/*hZmarbis->Reset();
+		for(int i=0; i < hZmar2->GetNbinsX(); i++) {
+		  hZmarbis->SetBinContent(i, hZmar2->GetBinContent(i)*1500/hZmar2->Integral());
+		  }*/
 		// 		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 2.4);
 		TH1F* hKeys = MakeKernelPDFFromTH1(hZmar, vec[i]->m_color, 1.8);
 		hZmar->Scale(1/hZmar->Integral());
@@ -151,9 +164,9 @@ vec[i]->m_color, 1);
 		hKeys->GetYaxis()->SetRangeUser(0, hKeys->GetMaximum()*1.95);
 		hKeys->GetXaxis()->SetRangeUser(-70, 90);
 		hKeys->Draw("same");
-		TF1* hFit = FitKeysSideBand(hKeys, hKeys->GetName(), -90,-50,20,90);
-		hFit->Draw("same");
-		TH1F* hKeys_woBkg = Subtract(hKeys, hFit);
+		//TF1* hFit = FitKeysSideBand(hKeys, hKeys->GetName(), -90,-50,20,90);
+		//hFit->Draw("same");
+		//TH1F* hKeys_woBkg = Subtract(hKeys, hFit);
 		vec[i]->m_hKeys = hKeys;			
 		//vec[i]->m_hKeys = hKeys_woBkg;	
 	}
@@ -369,7 +382,7 @@ vec[i]->m_color, 1);
 	gPad->SetGridy(1);
 	TGraph* g = new TGraph(vec.size());
 	for(int i=0; i<vec.size(); i++) {
-		cout << vec[i]->m_coords->m_Xhigh << endl;
+	  cout << "Point " << i << ": x = " << vec[i]->m_zTargetSupport - vec[0]->m_zTargetSupport << "; y = " << vec[i]->m_coords->m_Xhigh - vec[0]->m_coords->m_Xhigh << endl;
 // 		g->SetPoint(i, vec[i]->m_zTargetSupport - vec[0]->m_zTargetSupport, vec[i]->m_coords->m_Xhigh - vec[0]->m_coords->m_Xhigh - (vec[i]->m_zTargetSupport - vec[0]->m_zTargetSupport));
 		g->SetPoint(i, vec[i]->m_zTargetSupport - vec[0]->m_zTargetSupport, vec[i]->m_coords->m_Xhigh - vec[0]->m_coords->m_Xhigh);
 	}
