@@ -21,11 +21,11 @@ TH1F* MakeKernelPDFFromTH1(TH1F* h, int color, double rho)
   RooDataHist* dh = new RooDataHist("dh", "dh", *z, Import(*h));
 //   RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::MirrorBoth, 2) ;
   RooKeysPdf kest1("kest1","kest1",*z,*ds,RooKeysPdf::NoMirror, rho) ;
-//   RooPlot* frame = z->frame() ;
+   RooPlot* frame = z->frame() ;
 // //   ds->plotOn(frame);
-//   dh->plotOn(frame);
-//   kest1.plotOn(frame);
-//   frame->Draw();
+   dh->plotOn(frame);
+   kest1.plotOn(frame);
+   frame->Draw();
 //   
   TH1F* hKeys = (TH1F*) kest1.createHistogram("hKeys", *z);
   hKeys->SetLineColor(color);
