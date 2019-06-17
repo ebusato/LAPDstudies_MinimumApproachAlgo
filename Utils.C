@@ -101,7 +101,7 @@ TH1F* Draw(TTree* t, TString var, TCut cut, TString hName, int Nbins, double xmi
 	h->SetLineColor(color);
 	h->SetMarkerColor(color);
 	h->SetLineWidth(linesize);
-	h->Sumw2();
+	//h->Sumw2();
 	return h;
 }
 
